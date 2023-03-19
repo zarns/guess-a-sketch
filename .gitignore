@@ -19,6 +19,7 @@ server/.next/**
 client/.next/**
 server/out/**
 client/out/**
+client/.next/*
 
 # misc
 .DS_Store
@@ -81,9 +82,5 @@ server/.yarn/install-state.gz
 !.vscode/launch.json
 !.vscode/extensions.json
 !.vscode/*.code-snippets
-
-# Local History for Visual Studio Code
-.history/
-
-# Built Visual Studio Code Extensions
-*.vsix
+client/.vscode/settings.json
+server/.vscode/settings.json
