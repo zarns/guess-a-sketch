@@ -37,3 +37,4 @@ Major thanks to these resources:
 
 * [Josh tried coding](https://www.youtube.com/watch?v=Dib5TYHHfgA)
 * [favicon source](https://icons8.com/icons/set/marker)
+* [react dev tools](https://react.dev/learn/react-developer-tools)

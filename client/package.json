@@ -1,32 +1,31 @@
 {
-  "name": "telestrations",
-  "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
-    "build": "next build",
-    "start": "next start",
-    "lint": "next lint"
+    "dev": "next dev -p 3000",
+    "build": "next build && tsc -p tsconfig.json",
+    "start": "next start -p $PORT"
   },
   "dependencies": {
-    "@next/font": "^13.0.5",
-    "@types/node": "18.11.9",
-    "@types/react": "18.0.25",
-    "@types/react-dom": "18.0.9",
-    "eslint": "8.28.0",
-    "eslint-config-next": "13.0.5",
-    "nanoid": "^4.0.0",
-    "next": "^13.2.4",
-    "react": "18.2.0",
-    "react-color": "^2.19.3",
-    "react-dom": "18.2.0",
-    "socket.io-client": "^4.5.4",
-    "typescript": "4.9.3"
+    "autoprefixer": "^10.4.14",
+    "express": "^4.18.2",
+    "fabric": "^5.3.0",
+    "next": "latest",
+    "postcss": "^8.4.21",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "socket.io": "^4.6.1",
+    "socket.io-client": "^4.6.1",
+    "tailwindcss": "^3.2.7",
+    "uuid": "^9.0.0"
   },
   "devDependencies": {
-    "@types/react-color": "^3.0.6",
-    "autoprefixer": "^10.4.13",
-    "postcss": "^8.4.19",
-    "tailwindcss": "^3.2.4"
+    "@types/node": "^16.11.7",
+    "@types/react": "^17.0.38",
+    "@types/react-dom": "^17.0.11",
+    "@types/socket.io": "^3.0.2",
+    "npm-run-all": "^4.1.5",
+    "ts-node": "^10.4.0",
+    "ts-node-dev": "^2.0.0",
+    "typescript": "^4.8.3"
   }
 }

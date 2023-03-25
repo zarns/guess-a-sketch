@@ -1,15 +1,13 @@
+/** @type {import('tailwindcss').Config} */
 module.exports = {
-    content: [
-        "./app/**/*.{js,ts,jsx,tsx}",
-        "./pages/**/*.{js,ts,jsx,tsx}",
-        "./components/**/*.{js,ts,jsx,tsx}",
-    ],
-    theme: {
-        extend: {
-            fontFamily: {
-                disp: ["Permanent Marker, cursive"],
-            },
-        },
-    },
-    plugins: [],
+  content: [
+    './pages/**/*.{js,ts,jsx,tsx}', // Scans all files in the 'pages' directory
+    './components/**/*.{js,ts,jsx,tsx}', // Scans all files in the 'components' directory
+    // Add more paths as needed
+  ],
+  theme: {
+    extend: {},
+  },
+  variants: {},
+  plugins: [],
 }
