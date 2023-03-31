@@ -25,13 +25,18 @@ const UserList: React.FC = () => {
         User List:
       </h1>
       <div className="flex flex-col space-y-8">
-        {        <ul className="grid">
+        {<ul className="grid">
 
           {usernames.map((room, index) => (
             <li key={index}>
               <ul>
                 {room.map((username, index) => (
-                  <li key={index}>{username}</li>
+                  <li
+                  key={index}
+                  className={index === 0 ? 'font-bold text-lg' : ''}
+                  >
+                  {index === 0 ? `Room ${username}:` : username}
+                  </li>
                 ))}
               </ul>
             </li>

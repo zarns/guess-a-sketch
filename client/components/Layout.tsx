@@ -22,17 +22,24 @@ const Layout = ({ children, title = 'goofy drawings' }: Props) => (
     </Head>
     <header>
     <nav className="container mx-auto text-center py-1">
-        <Link href="/">Home</Link> | <Link href="/about">About</Link> |{' '}
-        <Link href="/users">Activity</Link> {' '}
+        <Link href="/" className="hover:text-yellow-300 transition duration-200">
+          Home
+        </Link> | {' '}
+        <Link href="/about" className="hover:text-yellow-300 transition duration-200">
+          About
+        </Link> | {' '}
+        <Link href="/users" className="hover:text-yellow-300 transition duration-200">
+          Activity
+        </Link>
       </nav>
     </header>
     {children}
     <footer>
       <hr />
       <nav className="container mx-auto text-center py-1">
-        <a href="https://mason.zarns.net" target="_self" font-weight="bold">
+        <Link href="https://mason.zarns.net" target="_self" className="hover:text-yellow-300 transition duration-200">
           Thanks for Playing!
-        </a>
+        </Link>
       </nav>
     </footer>
   </div>

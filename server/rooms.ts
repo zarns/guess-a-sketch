@@ -3,11 +3,13 @@
 import { Socket } from 'socket.io';
 
 class Room {
+  id: string;
   users: Set<Socket>;
   creator: Socket;
   usernameMap: Map<Socket, string>;
 
-  constructor(creator: Socket, creatorUsername: string) {
+  constructor(roomId: string, creator: Socket, creatorUsername: string) {
+    this.id = roomId;
     this.creator = creator;
     this.users = new Set([creator]);
     this.usernameMap = new Map([[creator, creatorUsername]]);
@@ -43,7 +45,7 @@ class Rooms {
   }
 
   public createRoom(roomId: string, creator: Socket, creatorUsername: string): void {
-    const room = new Room(creator, creatorUsername); // create a new Room object
+    const room = new Room(roomId, creator, creatorUsername); // create a new Room object
     this.rooms.set(roomId, room);
     console.log('Number of active rooms:', this.rooms.size);
   }
@@ -83,10 +85,13 @@ class Rooms {
     const allRooms: string[][] = [];
     this.rooms.forEach(room => {
       const usernames = Array.from(room.usernameMap.values());
+      // Add the room id at the beginning of the array
+      usernames.unshift(room.id);
       allRooms.push(usernames);
     });
     return allRooms;
-  }  
+  }
+  
 }
 
 export default Rooms;
