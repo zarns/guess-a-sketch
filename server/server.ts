@@ -21,20 +21,21 @@ const rooms = Rooms.getInstance(); // Get an instance of the Rooms class
 io.on('connection', (socket) => {
   console.log('User connected:', socket.id);
 
-  socket.on('createRoom', () => {
+  socket.on('createRoom', (creatorUsername: string) => {
     const roomId = Math.floor(Math.random() * 1000).toString(); // Generate a random room number and convert it to a string
     socket.join(roomId);
-    rooms.createRoom(roomId, socket); // Add the room to the Rooms instance
+    rooms.createRoom(roomId, socket, creatorUsername); // Add the room to the Rooms instance
     socket.emit('roomCreated', roomId);
+    console.log('Created room ID:', roomId);
   });
 
-  socket.on('joinRoom', (roomId: string) => {
-    console.log('Received joinRoom event for room ID:', roomId);
+  socket.on('joinRoom', (roomId: string, username: string) => {
     const room = rooms.getRoom(roomId); // Retrieve the room data from the Rooms instance
     if (room) {
       socket.join(roomId);
-      room.addUser(socket); // Add the user to the room's Set of users
+      room.addUser(socket, username); // Add the user to the room's Set of users
       socket.emit('roomJoined', roomId);
+      console.log('Joined room ID:', roomId);
     } else {
       socket.emit('roomError', 'Room not found');
     }
@@ -62,6 +63,11 @@ io.on('connection', (socket) => {
   });
 
   // ... other socket event handlers ...
+});
+
+app.get('/usernames', (req, res) => {
+  const allUsernames = rooms.getUsernames();
+  res.status(200).json({ allUsernames });
 });
 
 const PORT = process.env.PORT || 3001;

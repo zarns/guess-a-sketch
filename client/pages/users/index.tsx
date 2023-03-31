@@ -1,35 +1,24 @@
-import { GetStaticProps } from 'next'
-import Link from 'next/link'
-
-import { User } from '../../interfaces'
-import { sampleUserData } from '../../utils/sample-data'
 import Layout from '../../components/Layout'
 import List from '../../components/List'
+import UserList from '../../components/UserList'
 
-type Props = {
-  items: User[]
+const defaultEndpoint = 'http://localhost:3001/usernames';
+
+export async function getServerSideUsers({ query }) {
+  const { id } = query;
+  const res = await fetch(`${defaultEndpoint}/${id}`);
+  const data = await res.json();
+  return {
+    props: {
+      data,
+    },
+  }
 }
 
-const WithStaticProps = ({ items }: Props) => (
-  <Layout title="Users List | Next.js + TypeScript Example">
-    <h1>Users List</h1>
-    <p>
-      Example fetching data from inside <code>getStaticProps()</code>.
-    </p>
-    <p>You are currently on: /users</p>
-    <List items={items} />
-    <p>
-      <Link href="/">Go home</Link>
-    </p>
+const UsersPage = () => (
+  <Layout title="Users List">
+    <UserList />
   </Layout>
 )
 
-export const getStaticProps: GetStaticProps = async () => {
-  // Example for including static props in a Next.js function component page.
-  // Don't forget to include the respective types for any props passed into
-  // the component.
-  const items: User[] = sampleUserData
-  return { props: { items } }
-}
-
-export default WithStaticProps
+export default UsersPage

@@ -6,8 +6,14 @@ module.exports = {
     // Add more paths as needed
   ],
   theme: {
+    extend: {
+        fontFamily: {
+            disp: ["Permanent Marker, cursive"],
+        },
+    },
+  },
+  variants: {
     extend: {},
   },
-  variants: {},
   plugins: [],
 }

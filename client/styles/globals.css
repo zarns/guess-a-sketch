@@ -1,6 +1,9 @@
+/* globals.css */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@import url('https://fonts.googleapis.com/css2?family=Permanent+Marker:wght@400;700&display=swap');
 
 .btn-shadow {
     -webkit-box-shadow: -5px 6px 1px 0px rgba(0, 0, 0, 0.62);
@@ -15,4 +18,8 @@
     -webkit-backdrop-filter: blur(5.5px);
     border-radius: 10px;
     border: 2px solid rgba(255, 255, 255, 0.22);
+}
+
+.font-permanent-marker {
+    font-family: 'Permanent Marker', cursive;
 }

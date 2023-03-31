@@ -7,24 +7,33 @@ type Props = {
   title?: string
 }
 
-const Layout = ({ children, title = 'This is the default title' }: Props) => (
-  <div>
+const Layout = ({ children, title = 'goofy drawings' }: Props) => (
+  <div className='bg-blue-600 min-h-screen text-white'>
+    <Head>
+        <link
+            href="https://fonts.googleapis.com/css2?family=Permanent+Marker:wght@400;700&display=swap"
+            rel="stylesheet"
+        ></link>
+    </Head>
     <Head>
       <title>{title}</title>
       <meta charSet="utf-8" />
       <meta name="viewport" content="initial-scale=1.0, width=device-width" />
     </Head>
     <header>
-      <nav>
+    <nav className="container mx-auto text-center py-1">
         <Link href="/">Home</Link> | <Link href="/about">About</Link> |{' '}
-        <Link href="/users">Users List</Link> |{' '}
-        <a href="/api/users">Users API</a>
+        <Link href="/users">Activity</Link> {' '}
       </nav>
     </header>
     {children}
     <footer>
       <hr />
-      <span>I'm here to stay (Footer)</span>
+      <nav className="container mx-auto text-center py-1">
+        <a href="https://mason.zarns.net" target="_self" font-weight="bold">
+          Thanks for Playing!
+        </a>
+      </nav>
     </footer>
   </div>
 )
