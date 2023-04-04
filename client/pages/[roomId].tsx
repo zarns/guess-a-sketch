@@ -7,12 +7,13 @@ import { useSocket } from '../contexts/SocketContext';
 
 const Room: React.FC = () => {
   const router = useRouter();
-  const { roomId } = router.query;
+  const socket = useSocket();
   const canvasRef = useRef(null);
+  const { roomId } = router.query;
   const [color, setColor] = useState('#000000');
   const [brushSize, setBrushSize] = useState(10);
   const [timer, setTimer] = useState(60);
-  const socket = useSocket();
+  const [drawings, setDrawings] = useState({});
 
   const colors = [
     '#FF0000', // Red
@@ -58,7 +59,7 @@ const Room: React.FC = () => {
     canvas.freeDrawingBrush.width = brushSize;
   }, [color, brushSize]);  
 
-  const handleSubmit = () => {
+  const handleSubmitDrawing = () => {
     if (!canvasRef.current) return;
 
     const canvas = canvasRef.current;
@@ -71,13 +72,30 @@ const Room: React.FC = () => {
     console.log('Drawing submitted');
   };
 
+  const handleViewAllDrawings = () => {
+    if (socket) {
+      socket.emit('viewAllDrawings', roomId);
+  
+      const handleDrawingData = ({ index, imageData }) => {
+        setDrawings((prevDrawings) => ({ ...prevDrawings, [index]: imageData }));
+      };
+  
+      socket.on('drawingData', handleDrawingData);
+  
+      return () => {
+        socket.off('drawingData', handleDrawingData);
+      };
+    }
+  };
+  
+
   useEffect(() => {
     const countdown = setInterval(() => {
       setTimer((prevTimer) => prevTimer - 1);
     }, 1000);
 
     if (timer === 0) {
-      handleSubmit();
+      handleSubmitDrawing();
       clearInterval(countdown);
     }
 
@@ -86,12 +104,13 @@ const Room: React.FC = () => {
 
   return (
     <div
-    className="bg-cover bg-center h-screen flex flex-col items-center"
-    style={{
-      backgroundImage: "url(../whiteboard_background.jpg)",
-      backgroundSize: "cover",
-      backgroundPosition: "center"
-    }}>
+      className="bg-cover bg-center h-screen flex flex-col items-center"
+      style={{
+        backgroundImage: "url(../whiteboard_background.jpg)",
+        backgroundSize: "cover",
+        backgroundPosition: "center"
+      }}
+    >
       <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '1rem' }}>
         <h1
           style={{
@@ -102,7 +121,7 @@ const Room: React.FC = () => {
             marginBottom: '0.5rem',
             padding: '0.5rem 1rem',
             borderRadius: '0.375rem',
-            backgroundColor: 'rgba(0, 0, 255, 0.9)', // Apply a semi-transparent blue background
+            backgroundImage: 'linear-gradient(to top, rgba(0, 0, 60, 0.7), rgba(20, 20, 200, 0.9))',
             transition: 'background-color 0.3s',
           }}
         >
@@ -166,12 +185,35 @@ const Room: React.FC = () => {
             onChange={(e) => setBrushSize(parseInt(e.target.value))}
           />
         </div>
-        <button
-          onClick={handleSubmit}
-          className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+        <div 
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            gap: '1rem',
+          }}
         >
-          Submit
-        </button>
+          <button
+            onClick={handleSubmitDrawing}
+            className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+          >
+            Submit
+          </button>
+          <button
+            onClick={handleViewAllDrawings}
+            className="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
+          >
+            View Drawings
+          </button>
+        </div>
+      </div>
+      <div style={{marginTop: '20px'}}>
+        {Object.values(drawings).map((imageData, index) => (
+        <div key={index}>
+          <h3>Drawing {index + 1}:</h3>
+          <img src={imageData as string} alt={`Drawing ${index + 1}`} />
+        </div>
+        ))}
       </div>
     </div>
   );

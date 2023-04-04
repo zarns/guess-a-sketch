@@ -4,6 +4,8 @@ import cors from 'cors';
 import { Server, Socket } from 'socket.io';
 import { createServer } from 'http';
 import Rooms from './rooms';
+import fs from 'fs';
+import path from 'path';
 
 const app = express();
 app.use(cors()); // Enable CORS for all routes
@@ -54,6 +56,66 @@ io.on('connection', (socket) => {
       socket.emit('roomLeft', roomId);
     }
   });
+
+  socket.on('saveDrawing', ({ roomId, drawingDataUrl }) => {
+    const base64Data = drawingDataUrl.replace(/^data:image\/png;base64,/, '');
+    const drawingsPath = path.join(__dirname, 'drawings');
+    const imagePath = path.join(drawingsPath, `${roomId}.png`);
+  
+    // Check if the 'drawings' directory exists and create it if not
+    fs.mkdir(drawingsPath, { recursive: true }, (err) => {
+      if (err && err.code !== 'EEXIST') {
+        console.error('Error creating drawings directory:', err);
+        socket.emit('drawingError', 'Error saving drawing');
+        return;
+      }
+  
+      // Save the drawing to the 'drawings' directory
+      fs.writeFile(imagePath, base64Data, 'base64', (err) => {
+        if (err) {
+          console.error('Error saving drawing:', err);
+          socket.emit('drawingError', 'Error saving drawing');
+          return;
+        }
+  
+        console.log(`Drawing saved for room ${roomId}`);
+        socket.emit('drawingSaved', `Drawing saved for room ${roomId}`);
+      });
+    });
+  }); 
+
+  // socket.on('viewDrawings', (roomId: string) => {
+  //   const room = rooms.getRoom(roomId);
+  //   if (room) {
+  //     const imageUrl = `http://localhost:3001/drawings/${roomId}.png`;
+  //     socket.emit('drawingURL', imageUrl);
+  //   } else {
+  //     socket.emit('drawingError', 'Drawing not found');
+  //   }
+  // });
+
+  socket.on('viewAllDrawings', (roomId: string) => {
+    // You can adjust this part to retrieve all the drawing files related to the roomId
+    const drawingFiles = [`./drawings/${roomId}.png`];
+  
+    const readAndSendDrawing = (index: number) => {
+      if (index >= drawingFiles.length) {
+        return;
+      }
+  
+      fs.readFile(drawingFiles[index], 'base64', (err, data) => {
+        if (err) {
+          console.error('Error reading drawing:', err);
+          return;
+        }
+        const imageData = `data:image/png;base64,${data}`;
+        socket.emit('drawingData', { index, imageData });
+        readAndSendDrawing(index + 1);
+      });
+    };
+  
+    readAndSendDrawing(0);
+  });  
 
   socket.on('disconnect', () => {
     console.log('User disconnected:', socket.id);
