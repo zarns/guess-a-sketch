@@ -4,27 +4,23 @@ import { Socket } from 'socket.io';
 
 class Room {
   id: string;
-  users: Set<Socket>;
   creator: Socket;
   usernameMap: Map<Socket, string>;
 
   constructor(roomId: string, creator: Socket, creatorUsername: string) {
     this.id = roomId;
     this.creator = creator;
-    this.users = new Set([creator]);
     this.usernameMap = new Map([[creator, creatorUsername]]);
   }
 
   public addUser(user: Socket, username: string): void {
-    this.users.add(user);
     this.usernameMap.set(user, username);
   }
 
   public removeUser(user: Socket): void {
-    this.users.delete(user);
     this.usernameMap.delete(user);
     if (this.creator === user) {
-      this.creator = Array.from(this.users)[0];
+      this.creator = Array.from(this.usernameMap.keys())[0];
     }
   }
 }
@@ -81,7 +77,7 @@ class Rooms {
     });
   }
 
-  public getUsernames(): string[][] {
+  public getAllUsernames(): string[][] {
     const allRooms: string[][] = [];
     this.rooms.forEach(room => {
       const usernames = Array.from(room.usernameMap.values());
@@ -90,6 +86,20 @@ class Rooms {
       allRooms.push(usernames);
     });
     return allRooms;
+  }
+
+  public getUsernamesInARoom(roomId: string): string[] | undefined {
+    const room = this.getRoom(roomId);
+    if (room) {
+      return Array.from(room.usernameMap.values());
+    }
+  }
+
+  public getHost(roomId: string): Socket | undefined {
+    const room = this.getRoom(roomId);
+    if (room) {
+      return room.creator;
+    }
   }
   
 }

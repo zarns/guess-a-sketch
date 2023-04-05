@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 
-// client/api/usernames.ts
+// client/api/allusernames.ts
 export async function getUsernames(): Promise<string[][]> {
-  const response = await fetch('http://localhost:3001/usernames');
+  const response = await fetch('http://localhost:3001/allUsernames');
   const data = await response.json();
   const allUsernames: string[][] = data.allUsernames;
   return allUsernames;

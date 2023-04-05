@@ -127,9 +127,22 @@ io.on('connection', (socket) => {
   // ... other socket event handlers ...
 });
 
-app.get('/usernames', (req, res) => {
-  const allUsernames = rooms.getUsernames();
+app.get('/allUsernames', (req, res) => {
+  const allUsernames = rooms.getAllUsernames();
   res.status(200).json({ allUsernames });
+});
+
+app.get('/getUsernamesInARoom', (req, res) => {
+  const roomId = req.query.roomId as string;
+  const usernames = rooms.getUsernamesInARoom(roomId);
+  res.status(200).json({ usernames });
+});
+
+app.get('/getHost', (req, res) => {
+  const roomId = req.query.roomId as string;
+  const room = rooms.getRoom(roomId);
+  const hostId = room?.creator?.id;
+  res.status(200).json({ hostId });
 });
 
 const PORT = process.env.PORT || 3001;
