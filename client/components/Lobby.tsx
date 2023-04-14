@@ -73,7 +73,7 @@ const Lobby: React.FC<LobbyProps> = ({ roomId, onStartGame }) => {
     <div>
       <h2>Users in Room {roomId}:</h2>
       <ul>
-        {users.map((user, index) => (
+        {users && users.map((user, index) => (
           <li key={index}>{user}</li>
         ))}
       </ul>

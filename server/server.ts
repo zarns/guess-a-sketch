@@ -145,6 +145,13 @@ app.get('/getHost', (req, res) => {
   res.status(200).json({ hostId });
 });
 
+const EMPTY_ROOM_CHECK_INTERVAL = 120 * 1000; // e.g., every 120 seconds
+
+// Periodically remove empty rooms
+setInterval(() => {
+  rooms.removeEmptyRooms();
+}, EMPTY_ROOM_CHECK_INTERVAL);
+
 const PORT = process.env.PORT || 3001;
 server.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);

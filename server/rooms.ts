@@ -101,7 +101,14 @@ class Rooms {
       return room.creator;
     }
   }
-  
+
+  public removeEmptyRooms() {
+    this.rooms.forEach(room => {
+      if (room.usernameMap.size === 0) {
+        this.rooms.delete(room.id);
+      }
+    });
+  }
 }
 
 export default Rooms;
