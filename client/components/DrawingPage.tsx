@@ -94,6 +94,20 @@ const DrawingPage: React.FC<DrawingPageProps> = ({ roomId, onViewDrawings }) => 
     return () => clearInterval(countdown);
   }, [timer]);
 
+  useEffect(() => {
+    if (socket) {
+      // Add listener for 'viewAllDrawings' event
+      socket.on('viewAllDrawings', () => {
+        handleViewAllDrawings(); // Fetch and display drawings when the event is received
+      });
+  
+      // Clean up the listener when the component is unmounted
+      return () => {
+        socket.off('viewAllDrawings');
+      };
+    }
+  }, [socket]);
+
   return (
     <div>
       <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '1rem' }}>

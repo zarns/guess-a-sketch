@@ -89,15 +89,9 @@ io.on('connection', (socket) => {
     });
   }); 
 
-  // socket.on('viewDrawings', (roomId: string) => {
-  //   const room = rooms.getRoom(roomId);
-  //   if (room) {
-  //     const imageUrl = `http://localhost:3001/drawings/${roomId}.png`;
-  //     socket.emit('drawingURL', imageUrl);
-  //   } else {
-  //     socket.emit('drawingError', 'Drawing not found');
-  //   }
-  // });
+  socket.on('viewAllDrawings', (roomId: string) => {  
+    io.in(roomId).emit('viewAllDrawings'); // Emit 'viewAllDrawings' event to all users in the room
+  });
 
   socket.on('viewAllDrawings', (roomId: string) => {
     // You can adjust this part to retrieve all the drawing files related to the roomId
