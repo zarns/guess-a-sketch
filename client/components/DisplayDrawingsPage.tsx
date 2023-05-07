@@ -36,22 +36,12 @@ const DisplayDrawingsPage: React.FC<DisplayDrawingsPageProps> = ({ roomId, onBac
   return (
     <div>
       <div style={{marginTop: '20px'}}>
-        <h2>Drawings in Room {roomId}</h2>
+        <h2 className='page-description'>
+          Drawings in Room {roomId}
+        </h2>
         {Object.values(drawings).map((imageData, index) => (
-          <div key={index}>
-            <h1
-              style={{
-                fontSize: '2rem',
-                fontWeight: 'bold',
-                color: 'white',
-                marginTop: '.5rem',
-                marginBottom: '0.5rem',
-                padding: '0.5rem 1rem',
-                borderRadius: '0.375rem',
-                backgroundImage: 'linear-gradient(to top, rgba(0, 0, 60, 0.7), rgba(20, 20, 200, 0.9))',
-                transition: 'background-color 0.3s',
-              }}
-            >
+          <div key={index} className='drawing-container'>
+            <h1 className='drawing-description'>
               somebody drew:
             </h1>
             <img src={imageData as string} alt={`Drawing ${index + 1}`} />

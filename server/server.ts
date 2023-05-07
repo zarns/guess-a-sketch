@@ -63,58 +63,40 @@ io.on('connection', (socket) => {
   });
 
   socket.on('saveDrawing', ({ roomId, drawingDataUrl }) => {
-    const base64Data = drawingDataUrl.replace(/^data:image\/png;base64,/, '');
-    const drawingsPath = path.join(__dirname, 'drawings');
-    const imagePath = path.join(drawingsPath, `${roomId}.png`);
-  
-    // Check if the 'drawings' directory exists and create it if not
-    fs.mkdir(drawingsPath, { recursive: true }, (err) => {
-      if (err && err.code !== 'EEXIST') {
-        console.error('Error creating drawings directory:', err);
+    const room = rooms.getRoom(roomId);
+    if (!room) {
+      console.error('Error: room not found');
+      socket.emit('drawingError', 'Error saving drawing');
+      return;
+    }
+    room.saveDrawing(socket, drawingDataUrl, (err, message) => {
+      if (err) {
         socket.emit('drawingError', 'Error saving drawing');
-        return;
+      } else {
+        socket.emit('drawingSaved', message);
       }
-  
-      // Save the drawing to the 'drawings' directory
-      fs.writeFile(imagePath, base64Data, 'base64', (err) => {
-        if (err) {
-          console.error('Error saving drawing:', err);
-          socket.emit('drawingError', 'Error saving drawing');
-          return;
-        }
-  
-        console.log(`Drawing saved for room ${roomId}`);
-        socket.emit('drawingSaved', `Drawing saved for room ${roomId}`);
-      });
     });
-  }); 
-
-  socket.on('viewAllDrawings', (roomId: string) => {  
-    io.in(roomId).emit('viewAllDrawings'); // Emit 'viewAllDrawings' event to all users in the room
   });
 
   socket.on('viewAllDrawings', (roomId: string) => {
-    // You can adjust this part to retrieve all the drawing files related to the roomId
-    const drawingFiles = [`./drawings/${roomId}.png`];
+    io.in(roomId).emit('viewAllDrawings'); // Emit 'viewAllDrawings' event to all users in the room
+    const room = rooms.getRoom(roomId);
+    if (!room) {
+      console.error('Error: room not found');
+      return;
+    }
   
-    const readAndSendDrawing = (index: number) => {
-      if (index >= drawingFiles.length) {
-        return;
-      }
-  
-      fs.readFile(drawingFiles[index], 'base64', (err, data) => {
-        if (err) {
-          console.error('Error reading drawing:', err);
-          return;
-        }
-        const imageData = `data:image/png;base64,${data}`;
+    room.viewAllDrawings(socket, (index, imageData, err) => {    
+      if (err) {
+        console.error('Error reading drawing:', err);
+      } else if (imageData) {
         socket.emit('drawingData', { index, imageData });
-        readAndSendDrawing(index + 1);
-      });
-    };
-  
-    readAndSendDrawing(0);
-  });  
+      } else {
+        // No more drawings to send, emit 'viewAllDrawingsFinished' event
+        socket.emit('viewAllDrawingsFinished');
+      }
+    });
+  }); 
 
   socket.on('disconnect', () => {
     console.log('User disconnected:', socket.id);
