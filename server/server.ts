@@ -31,12 +31,17 @@ io.on('connection', (socket) => {
     console.log('Created room ID:', roomId);
   });
 
+  socket.on('startGame', (roomId) => {
+    socket.to(roomId).emit('gameStarted');
+  });
+
   socket.on('joinRoom', (roomId: string, username: string) => {
     const room = rooms.getRoom(roomId); // Retrieve the room data from the Rooms instance
     if (room) {
       socket.join(roomId);
       room.addUser(socket, username); // Add the user to the room's Set of users
       socket.emit('roomJoined', roomId);
+      io.in(roomId).emit('userJoined'); // Emit 'userJoined' event to all users in the room
       console.log('Joined room ID:', roomId);
     } else {
       socket.emit('roomError', 'Room not found');

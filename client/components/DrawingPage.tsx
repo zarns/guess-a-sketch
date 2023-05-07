@@ -7,15 +7,15 @@ import { useSocket } from '../contexts/SocketContext';
 
 interface DrawingPageProps {
   roomId: string | string[] | undefined;
+  onViewDrawings: () => void;
 }
 
-const DrawingPage: React.FC<DrawingPageProps> = ({ roomId }) => {
+const DrawingPage: React.FC<DrawingPageProps> = ({ roomId, onViewDrawings }) => {
   const socket = useSocket();
   const canvasRef = useRef(null);
   const [color, setColor] = useState('#000000');
   const [brushSize, setBrushSize] = useState(10);
   const [timer, setTimer] = useState(60);
-  const [drawings, setDrawings] = useState({});
 
   const colors = [
     '#FF0000', // Red
@@ -77,16 +77,7 @@ const DrawingPage: React.FC<DrawingPageProps> = ({ roomId }) => {
   const handleViewAllDrawings = () => {
     if (socket) {
       socket.emit('viewAllDrawings', roomId);
-  
-      const handleDrawingData = ({ index, imageData }) => {
-        setDrawings((prevDrawings) => ({ ...prevDrawings, [index]: imageData }));
-      };
-  
-      socket.on('drawingData', handleDrawingData);
-  
-      return () => {
-        socket.off('drawingData', handleDrawingData);
-      };
+      onViewDrawings(); // Call the onViewDrawings prop function
     }
   };
 
@@ -201,28 +192,6 @@ const DrawingPage: React.FC<DrawingPageProps> = ({ roomId }) => {
             View Drawings
           </button>
         </div>
-      </div>
-      <div style={{marginTop: '20px'}}>
-        {Object.values(drawings).map((imageData, index) => (
-        <div key={index}>
-          <h1
-            style={{
-              fontSize: '2rem',
-              fontWeight: 'bold',
-              color: 'white',
-              marginTop: '.5rem',
-              marginBottom: '0.5rem',
-              padding: '0.5rem 1rem',
-              borderRadius: '0.375rem',
-              backgroundImage: 'linear-gradient(to top, rgba(0, 0, 60, 0.7), rgba(20, 20, 200, 0.9))',
-              transition: 'background-color 0.3s',
-            }}
-          >
-          somebody drew:
-          </h1>
-          <img src={imageData as string} alt={`Drawing ${index + 1}`} />
-        </div>
-        ))}
       </div>
     </div>
   );

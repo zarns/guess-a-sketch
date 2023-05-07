@@ -41,24 +41,19 @@ const Lobby: React.FC<LobbyProps> = ({ roomId, onStartGame }) => {
   useEffect(() => {
     fetchUsers();
     fetchHost();
-  }, [roomId]);
-
-  // Listen for events related to users joining and leaving the room
-  // useEffect(() => {
-  //   if (socket) {
-  //     socket.emit('joinRoom', roomId);
-
-  //     socket.on('users', (usersInRoom: string[], host: boolean) => {
-  //       setUsers(usersInRoom);
-  //       setIsHost(host);
-  //     });
-
-  //     return () => {
-  //       socket.off('users');
-  //       socket.off('newMessage');
-  //     };
-  //   }
-  // }, [socket, roomId]);
+  
+    if (socket) {
+      // Add listener for 'userJoined' event
+      socket.on('userJoined', () => {
+        fetchUsers(); // Refresh the user list when a new user joins the room
+      });
+  
+      // Clean up the listener when the component is unmounted
+      return () => {
+        socket.off('userJoined');
+      };
+    }
+  }, [roomId, socket]);
 
   // Handle the game start event
   const handleStartGame = () => {
