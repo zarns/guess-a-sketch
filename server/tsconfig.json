@@ -8,6 +8,7 @@
     "skipLibCheck": true,
     "outDir": "./dist",
     "baseUrl": ".",
+    "resolveJsonModule": true,
     "paths": {
       "*": ["node_modules/*"]
     }

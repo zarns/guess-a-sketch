@@ -4,8 +4,6 @@ import cors from 'cors';
 import { Server, Socket } from 'socket.io';
 import { createServer } from 'http';
 import Rooms from './rooms';
-import fs from 'fs';
-import path from 'path';
 
 const app = express();
 app.use(cors()); // Enable CORS for all routes
@@ -69,13 +67,7 @@ io.on('connection', (socket) => {
       socket.emit('drawingError', 'Error saving drawing');
       return;
     }
-    room.saveDrawing(socket, drawingDataUrl, (err, message) => {
-      if (err) {
-        socket.emit('drawingError', 'Error saving drawing');
-      } else {
-        socket.emit('drawingSaved', message);
-      }
-    });
+    room.saveDrawing(socket, drawingDataUrl);
   });
 
   socket.on('viewAllDrawings', (roomId: string) => {
@@ -86,7 +78,7 @@ io.on('connection', (socket) => {
       return;
     }
   
-    room.viewAllDrawings(socket, (index, imageData, err) => {    
+    room.viewAllDrawings((index, imageData, err) => {    
       if (err) {
         console.error('Error reading drawing:', err);
       } else if (imageData) {
