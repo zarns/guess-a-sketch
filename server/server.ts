@@ -60,35 +60,26 @@ io.on('connection', (socket) => {
     }
   });
 
-  socket.on('saveDrawing', ({ roomId, drawingDataUrl }) => {
+  socket.on('saveDrawing', ({ roomId, flipBookOwner, drawingDataUrl }) => {
     const room = rooms.getRoom(roomId);
     if (!room) {
       console.error('Error: room not found');
       socket.emit('drawingError', 'Error saving drawing');
       return;
     }
-    room.saveDrawing(socket, drawingDataUrl);
+    room.saveDrawing(socket, flipBookOwner, drawingDataUrl);
   });
 
   socket.on('viewAllDrawings', (roomId: string) => {
-    io.in(roomId).emit('viewAllDrawings'); // Emit 'viewAllDrawings' event to all users in the room
     const room = rooms.getRoom(roomId);
     if (!room) {
       console.error('Error: room not found');
       return;
     }
   
-    room.viewAllDrawings((index, imageData, err) => {    
-      if (err) {
-        console.error('Error reading drawing:', err);
-      } else if (imageData) {
-        socket.emit('drawingData', { index, imageData });
-      } else {
-        // No more drawings to send, emit 'viewAllDrawingsFinished' event
-        socket.emit('viewAllDrawingsFinished');
-      }
-    });
-  }); 
+    const allFlipbooksInRoom = room.viewAllDrawings();
+    socket.emit('allFlipbooksData', allFlipbooksInRoom);
+  });
 
   socket.on('disconnect', () => {
     console.log('User disconnected:', socket.id);
@@ -96,8 +87,6 @@ io.on('connection', (socket) => {
     // Get the room that the user is in
     rooms.removeUserFromAllRooms(socket);
   });
-
-  // ... other socket event handlers ...
 });
 
 app.get('/allUsernames', (req, res) => {

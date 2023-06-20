@@ -1,19 +1,19 @@
 // server/FlipBook.ts
 
 class FlipBook {
-  private pages: Array<{ type: 'drawing' | 'guess', content: string }>;
+  private pages: Array<{ username: string, type: 'drawing' | 'guess', content: string }>;
 
   constructor(firstWord: string) {
     this.pages = [];
-    this.pages.push({ type: 'guess', content: firstWord });
+    this.pages.push({ username: '', type: 'guess', content: firstWord });
   }
 
-  addGuess(guess: string) {
-    this.pages.push({ type: 'guess', content: guess });
+  addGuess(guesserUsername: string, guess: string) {
+    this.pages.push({ username: guesserUsername, type: 'guess', content: guess });
   }
 
-  addDrawing(drawingDataUrl: string) {
-    this.pages.push({ type: 'drawing', content: drawingDataUrl });
+  addDrawing(artistUsername: string, drawingDataUrl: string) {
+    this.pages.push({ username: artistUsername, type: 'drawing', content: drawingDataUrl });
   }
 
   getPages() {

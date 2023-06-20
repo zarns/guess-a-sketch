@@ -16,6 +16,8 @@ const DrawingPage: React.FC<DrawingPageProps> = ({ roomId, onViewDrawings }) => 
   const [color, setColor] = useState('#000000');
   const [brushSize, setBrushSize] = useState(10);
   const [timer, setTimer] = useState(60);
+  const [currFlipbookOwner, setCurrFlipbookOwner] = useState<string | null>(null);
+  const [waitingForFlipbook, setWaitingForFlipbook] = useState(false);
 
   const colors = [
     '#FF0000', // Red
@@ -68,7 +70,9 @@ const DrawingPage: React.FC<DrawingPageProps> = ({ roomId, onViewDrawings }) => 
     const drawingDataUrl = canvas.toDataURL();
 
     if (socket) {
-      socket.emit('saveDrawing', { roomId, drawingDataUrl });
+      socket.emit('saveDrawing', { roomId, currFlipbookOwner, drawingDataUrl });
+      setWaitingForFlipbook(true);
+      socket.emit('requestNextFlipbook', { roomId, currFlipbookOwner });
     }
 
     console.log('Drawing submitted');
@@ -93,6 +97,25 @@ const DrawingPage: React.FC<DrawingPageProps> = ({ roomId, onViewDrawings }) => 
 
     return () => clearInterval(countdown);
   }, [timer]);
+
+  useEffect(() => {
+    if (socket) {
+      socket.on('newFlipbook', ({ owner }) => {
+        if (canvasRef.current) {
+          const canvas = canvasRef.current;
+          canvas.clear();
+        }
+        
+        setCurrFlipbookOwner(owner);
+        setWaitingForFlipbook(false); // Flipbook is received, stop waiting
+      });
+  
+      return () => {
+        socket.off('newFlipbook');
+      };
+    }
+  }, [socket]);
+  
 
   useEffect(() => {
     if (socket) {
@@ -145,20 +168,6 @@ const DrawingPage: React.FC<DrawingPageProps> = ({ roomId, onViewDrawings }) => 
       <div style={{marginBottom:'20px'}}>
         <canvas ref={canvasRef} style={{ border: '1px solid black' }} />
       </div>
-      <div>
-        {colors.map((colorValue) => (
-          <button
-            key={colorValue}
-            style={{
-              backgroundColor: colorValue,
-              width: '30px',
-              height: '30px',
-              margin: '2px',
-            }}
-            onClick={() => setColor(colorValue)}
-          />
-        ))}
-      </div>
       <div 
         style={{
           display: 'flex',
@@ -167,6 +176,20 @@ const DrawingPage: React.FC<DrawingPageProps> = ({ roomId, onViewDrawings }) => 
           gap: '1rem',
         }}
       >
+        <div>
+          {colors.map((colorValue) => (
+            <button
+              key={colorValue}
+              style={{
+                backgroundColor: colorValue,
+                width: '30px',
+                height: '30px',
+                margin: '2px',
+              }}
+              onClick={() => setColor(colorValue)}
+            />
+          ))}
+        </div>
         <div
           style={{
             backgroundImage: 'linear-gradient(to top, rgba(255, 165, 0, 0.5), rgba(255, 204, 0, 0.9))',
@@ -193,12 +216,12 @@ const DrawingPage: React.FC<DrawingPageProps> = ({ roomId, onViewDrawings }) => 
             gap: '1rem',
           }}
         >
-          <button
+          {/* <button
             onClick={handleSubmitDrawing}
             className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
           >
             Submit
-          </button>
+          </button> */}
           <button
             onClick={handleViewAllDrawings}
             className="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
@@ -207,6 +230,21 @@ const DrawingPage: React.FC<DrawingPageProps> = ({ roomId, onViewDrawings }) => 
           </button>
         </div>
       </div>
+      {waitingForFlipbook && (
+        <div 
+          className={"text-black font-bold py-2 px-4 rounded"} 
+          style={{ 
+            display: 'flex', 
+            justifyContent: 'center', 
+            alignItems: 'center', 
+            gap: '1rem', 
+            fontSize: '25px'  // or any other value you prefer
+          }}
+        >
+          Submitted. Waiting for next flipbook to become available...
+        </div>
+
+      )}
     </div>
   );
 };

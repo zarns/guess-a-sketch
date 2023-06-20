@@ -49,7 +49,7 @@ const Room: React.FC = () => {
           <DrawingPage roomId={roomId} onViewDrawings={handleShowDrawings} />
         )}
         {gameStarted && showDrawings && (
-          <DisplayDrawingsPage roomId={roomId} onBack={() => setShowDrawings(false)} onViewDrawings={handleShowDrawings} />
+          <DisplayDrawingsPage roomId={roomId} onBack={() => setShowDrawings(false)} />
         )}
       </div>
     </div>

@@ -10,14 +10,12 @@ class Room {
   id: string;
   creator: Socket;
   usernameMap: Map<Socket, string>;
-  drawings: Map<string, string>;
   flipBooks: Map<string, FlipBook>;
 
   constructor(roomId: string, creator: Socket, creatorUsername: string) {
     this.id = roomId;
     this.creator = creator;
     this.usernameMap = new Map([[creator, creatorUsername]]);
-    this.drawings = new Map();
     this.flipBooks = new Map();
   }
 
@@ -43,7 +41,7 @@ class Room {
     });
   }
 
-  saveDrawing(socket: Socket, drawingDataUrl: string) {
+  saveDrawing(socket: Socket, flipBookOwner: string, drawingDataUrl: string) {
     let username = this.usernameMap.get(socket);
 
     if (!username) {
@@ -51,22 +49,26 @@ class Room {
       return;
     }
 
-    let flipbook = this.flipBooks.get(username);
+    let flipbook = this.flipBooks.get(flipBookOwner);
 
     if (!flipbook) {
       console.error(`Error: username not found in the flipBooks map`);
       return;
     }
 
-    flipbook.addDrawing(drawingDataUrl);
+    flipbook.addDrawing(username, drawingDataUrl);
     console.log(`Drawing saved for room ${this.id}`);
   }
 
-  viewAllDrawings(callback: (username: string, data: { type: 'drawing' | 'guess', content: string }[] | null, err?: Error) => void) {
+  viewAllDrawings(): Array<{ username: string, data: { username: string, type: 'drawing' | 'guess', content: string }[] }> {
+    const allFlipbooks = [];
+  
     for (const [username, flipbook] of this.flipBooks.entries()) {
       const pages = flipbook.getPages();
-      callback(username, pages);
+      allFlipbooks.push({ username, data: pages });
     }
+  
+    return allFlipbooks;
   }
 
   private getRandomWords(numWords: number): string[] {
@@ -77,6 +79,9 @@ class Room {
     }
     return Array.from(uniqueWords);
   }
+
+  // getNextFlipbook():  {
+  // }
 }
 
 class Rooms {
