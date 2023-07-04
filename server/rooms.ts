@@ -30,7 +30,7 @@ class Room {
     }
   }
 
-  assignWords() {
+  buildFlipBooks() {
     const uniqueWords = this.getRandomWords(this.usernameMap.size);
     let wordIndex = 0;
   
@@ -41,18 +41,20 @@ class Room {
     });
   }
 
-  saveDrawing(socket: Socket, flipBookOwner: string, drawingDataUrl: string) {
+  saveDrawing(socket: Socket, drawingDataUrl: string) {
     let username = this.usernameMap.get(socket);
+    console.log(`flipbooks: ${Array.from(this.flipBooks.keys()).join(', ')}`);
 
     if (!username) {
       console.error(`Error: username not found in the usernameMap`);
+      console.log(`usernameMap: ${this.usernameMap.size}`);
       return;
     }
 
-    let flipbook = this.flipBooks.get(flipBookOwner);
+    let flipbook = this.flipBooks.get(username);
 
     if (!flipbook) {
-      console.error(`Error: username not found in the flipBooks map`);
+      console.error(`Error: username${username} not found in the flipBooks map`);
       return;
     }
 

@@ -15,7 +15,7 @@ const DrawingPage: React.FC<DrawingPageProps> = ({ roomId, onViewDrawings }) => 
   const canvasRef = useRef(null);
   const [color, setColor] = useState('#000000');
   const [brushSize, setBrushSize] = useState(10);
-  const [timer, setTimer] = useState(60);
+  const [timer, setTimer] = useState(3);
   const [currFlipbookOwner, setCurrFlipbookOwner] = useState<string | null>(null);
   const [waitingForFlipbook, setWaitingForFlipbook] = useState(false);
 
@@ -70,8 +70,9 @@ const DrawingPage: React.FC<DrawingPageProps> = ({ roomId, onViewDrawings }) => 
     const drawingDataUrl = canvas.toDataURL();
 
     if (socket) {
-      socket.emit('saveDrawing', { roomId, currFlipbookOwner, drawingDataUrl });
+      socket.emit('saveDrawing', { roomId, drawingDataUrl });
       setWaitingForFlipbook(true);
+      console.log("drawingPage emitting saveDrawing");
       socket.emit('requestNextFlipbook', { roomId, currFlipbookOwner });
     }
 

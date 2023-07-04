@@ -19,15 +19,18 @@ const DisplayDrawingsPage: React.FC<DisplayDrawingsPageProps> = ({ roomId, onBac
   
       const handleFlipbooksData = (allFlipbooks: Array<{ username: string, data: { type: 'drawing' | 'guess', content: string }[] }>) => {
         setAllFlipbooks(allFlipbooks);
+        console.log("Received flipbooks data: ", allFlipbooks);
       };
   
-      socket.on('FlipbooksData', handleFlipbooksData);
+      socket.on('allFlipbooksData', handleFlipbooksData);
+      console.log(`Client emitted 'viewAllDrawings' with roomId ${roomId}`);
   
       return () => {
         socket.off('allFlipbooksData', handleFlipbooksData);
       };
     }
   };
+  
 
   useEffect(() => {
     handleViewAllDrawings();

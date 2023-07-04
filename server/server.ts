@@ -4,6 +4,8 @@ import cors from 'cors';
 import { Server, Socket } from 'socket.io';
 import { createServer } from 'http';
 import Rooms from './rooms';
+import FlipBook from './flipbook';
+
 
 const app = express();
 app.use(cors()); // Enable CORS for all routes
@@ -29,9 +31,18 @@ io.on('connection', (socket) => {
     console.log('Created room ID:', roomId);
   });
 
-  socket.on('startGame', (roomId) => {
+  socket.on('startGame', (roomId: string) => {
+    const room = rooms.getRoom(roomId);
+    if (!room) {
+      console.error('Error: room not found');
+      return;
+    }
+    
+    room.buildFlipBooks();
+    
     socket.to(roomId).emit('gameStarted');
   });
+  
 
   socket.on('joinRoom', (roomId: string, username: string) => {
     const room = rooms.getRoom(roomId); // Retrieve the room data from the Rooms instance
@@ -60,14 +71,15 @@ io.on('connection', (socket) => {
     }
   });
 
-  socket.on('saveDrawing', ({ roomId, flipBookOwner, drawingDataUrl }) => {
+  socket.on('saveDrawing', ({ roomId, drawingDataUrl }) => {
+    console.log(`saveDrawing event in room: ${roomId}`);
     const room = rooms.getRoom(roomId);
     if (!room) {
       console.error('Error: room not found');
       socket.emit('drawingError', 'Error saving drawing');
       return;
     }
-    room.saveDrawing(socket, flipBookOwner, drawingDataUrl);
+    room.saveDrawing(socket, drawingDataUrl);
   });
 
   socket.on('viewAllDrawings', (roomId: string) => {
@@ -79,6 +91,8 @@ io.on('connection', (socket) => {
   
     const allFlipbooksInRoom = room.viewAllDrawings();
     socket.emit('allFlipbooksData', allFlipbooksInRoom);
+    console.log(`Sent allFlipbooksData event in room: ${roomId}. 
+    Data: ${JSON.stringify(allFlipbooksInRoom)}`);
   });
 
   socket.on('disconnect', () => {
