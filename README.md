@@ -1,7 +1,5 @@
 # Telestrations
 
-Deployed at [telestrations.zarns.net](https://telestrations.zarns.net). Try it out!
-
 Check out my [portfolio](https://mason.zarns.net)
 
 ## Installation
