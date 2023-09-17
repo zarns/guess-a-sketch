@@ -7,8 +7,8 @@ const IndexPage = () => (
     <div
       className="bg-cover bg-center h-screen"
       style={{
-        backgroundImage: "url(../whiteboard_background.jpg)",
-        backgroundSize: "cover",
+        backgroundImage: "url(../whiteboard_background_seamless.jpg)",
+        backgroundRepeat: "cover",
         backgroundPosition: "center"
       }}
     >

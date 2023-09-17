@@ -41,8 +41,7 @@ io.on('connection', (socket) => {
     room.buildFlipBooks();
     
     socket.to(roomId).emit('gameStarted');
-  });
-  
+  });  
 
   socket.on('joinRoom', (roomId: string, username: string) => {
     const room = rooms.getRoom(roomId); // Retrieve the room data from the Rooms instance
@@ -71,6 +70,17 @@ io.on('connection', (socket) => {
     }
   });
 
+  socket.on('giveMeAFlipBook', (roomId: string) => {
+    const room = rooms.getRoom(roomId);
+    if (!room) {
+      console.error('Error: room not found');
+      return;
+    }
+  
+    const page = room.getNextFlipbookFor(socket)?.getLatestPage();
+    socket.emit('flipbookData', page, room.currentRound);
+  });
+
   socket.on('saveDrawing', ({ roomId, drawingDataUrl }) => {
     console.log(`saveDrawing event in room: ${roomId}`);
     const room = rooms.getRoom(roomId);
@@ -80,6 +90,22 @@ io.on('connection', (socket) => {
       return;
     }
     room.saveDrawing(socket, drawingDataUrl);
+    const currRound = room.checkPhaseCompletion();
+    if (currRound === -1) {
+      return;
+    }
+    socket.emit('nextRound', currRound);
+  });
+
+  socket.on('submitGuess', ({ roomId, guess }) => {
+    console.log(`submitGuess event in room: ${roomId}`);
+    const room = rooms.getRoom(roomId);
+    if (!room) {
+      console.error('Error: room not found');
+      socket.emit('guessError', 'Error submitting guess');
+      return;
+    }
+    room.saveGuess(socket, guess);
   });
 
   socket.on('viewAllDrawings', (roomId: string) => {

@@ -16,8 +16,16 @@ class FlipBook {
     this.pages.push({ username: artistUsername, type: 'drawing', content: drawingDataUrl });
   }
 
+  hasEntryForRound(roundNumber: number): boolean {
+    return this.pages.length >= roundNumber;
+  }
+
   getPages() {
     return this.pages;
+  }
+
+  getLatestPage() {
+    return this.pages[this.pages.length - 1];
   }
 }
 

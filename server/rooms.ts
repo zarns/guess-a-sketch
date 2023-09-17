@@ -11,12 +11,49 @@ class Room {
   creator: Socket;
   usernameMap: Map<Socket, string>;
   flipBooks: Map<string, FlipBook>;
+  currentRound: number; // New variable to track the current round
 
   constructor(roomId: string, creator: Socket, creatorUsername: string) {
     this.id = roomId;
     this.creator = creator;
     this.usernameMap = new Map([[creator, creatorUsername]]);
     this.flipBooks = new Map();
+    this.currentRound = 1; // Initialize currentRound to 1
+  }
+
+  transitionPhase() {
+    this.currentRound += 1;
+  }
+
+  // Method to check if all users have completed their action for the current phase
+  checkPhaseCompletion() {
+    // Check if all FlipBooks have an entry for the current round and phase
+    for (let flipBook of this.flipBooks.values()) {
+      if (!flipBook.hasEntryForRound(this.currentRound)) {
+        return -1; // Not all drawings submitted yet
+      }
+    }
+    // If all users have completed their action, transition to the next phase or round
+    this.transitionPhase();
+    return this.currentRound;
+  }
+
+  getNextFlipbookFor(socket: Socket): FlipBook | undefined {
+    const username = this.usernameMap.get(socket);
+    if (!username) {
+      console.error(`Error: username not found in the usernameMap`);
+      console.log(`usernameMap: ${this.usernameMap.size}`);
+      return;
+    }
+
+    const flipbook = this.flipBooks.get(username);
+
+    if (!flipbook) {
+      console.error(`Error: username ${username} not found in the flipBooks map`);
+      return;
+    }
+
+    return flipbook;
   }
 
   addUser(user: Socket, username: string): void {
@@ -60,6 +97,27 @@ class Room {
 
     flipbook.addDrawing(username, drawingDataUrl);
     console.log(`Drawing saved for room ${this.id}`);
+    this.checkPhaseCompletion();
+  }
+
+  saveGuess(socket: Socket, guess: string) {
+    const username = this.usernameMap.get(socket);
+    if (!username) {
+      console.error(`Error: username not found in the usernameMap`);
+      console.log(`usernameMap: ${this.usernameMap.size}`);
+      return;
+    }
+
+    const flipBook = this.flipBooks.get(username);
+
+    if (!flipBook) {
+      console.error(`Error: username${username} not found in the flipBooks map`);
+      return;
+    }
+
+    flipBook.addGuess(username, guess);
+    console.log(`${username} guessed (${guess}) in room ${this.id}`);
+    this.checkPhaseCompletion();
   }
 
   viewAllDrawings(): Array<{ username: string, data: { username: string, type: 'drawing' | 'guess', content: string }[] }> {

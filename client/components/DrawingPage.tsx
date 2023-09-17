@@ -15,7 +15,7 @@ const DrawingPage: React.FC<DrawingPageProps> = ({ roomId, onViewDrawings }) => 
   const canvasRef = useRef(null);
   const [color, setColor] = useState('#000000');
   const [brushSize, setBrushSize] = useState(10);
-  const [timer, setTimer] = useState(3);
+  const [timer, setTimer] = useState(5);
   const [currFlipbookOwner, setCurrFlipbookOwner] = useState<string | null>(null);
   const [waitingForFlipbook, setWaitingForFlipbook] = useState(false);
 
