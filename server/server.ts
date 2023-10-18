@@ -117,8 +117,8 @@ io.on('connection', (socket) => {
   
     const allFlipbooksInRoom = room.viewAllDrawings();
     socket.emit('allFlipbooksData', allFlipbooksInRoom);
-    console.log(`Sent allFlipbooksData event in room: ${roomId}. 
-    Data: ${JSON.stringify(allFlipbooksInRoom)}`);
+    console.log(`Sent allFlipbooksData event in room: ${roomId}.`); 
+    // console.log(`Data: ${JSON.stringify(allFlipbooksInRoom)}`);
   });
 
   socket.on('disconnect', () => {

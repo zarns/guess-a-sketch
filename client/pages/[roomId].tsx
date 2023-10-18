@@ -39,8 +39,9 @@ const Room: React.FC = () => {
 
   useEffect(() => {
     if (socket) {
-      socket.on('flipbookData', (latestPage) => {
+      socket.on('flipbookData', (latestPage, newCurrentRound) => {
         setPreviousDrawing(latestPage.drawingDataUrl);
+        setCurrentRound(newCurrentRound);
       });
     }
     return () => {

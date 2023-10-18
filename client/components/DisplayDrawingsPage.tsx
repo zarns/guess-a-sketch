@@ -44,18 +44,22 @@ const DisplayDrawingsPage: React.FC<DisplayDrawingsPageProps> = ({ roomId, onBac
         </h2>
         {allFlipbooks.map((flipbook, index) => (
         <div key={index} className="flipbook-container">
-          <h2 className="flipbook-title">{flipbook.username}'s Flipbook</h2>
+          <div className="title-container">
+            <h2 className="title-description">{flipbook.username}'s Flipbook</h2>
+          </div>
           {flipbook.data.map((page, pageIndex) => (
             <div key={pageIndex} className="page-container">
-              <h4 className="contributor">{page.username}</h4>
-              {page.type === 'drawing' ? (
-                <div className="drawing-container">
-                  <img src={page.content} alt={`Drawing ${pageIndex + 1}`} />
-                </div>
+              {pageIndex === 0 ? (
+                <h4 className='original-word-description'>Starter Word: {page.content}</h4>
               ) : (
-                <div className="guess-container">
-                  <h3 className="guess-description">{page.content}</h3>
-                </div>
+                page.type === 'drawing' ? (
+                  <div className="drawing-container">
+                    <h4 className="artist-description">{page.username}</h4>
+                    <img src={page.content} alt={`Drawing ${pageIndex + 1}`} />
+                  </div>
+                ) : (
+                  <h3 className="guess-description">{page.username} Guessed {page.content}</h3>
+                )
               )}
             </div>
           ))}
@@ -70,6 +74,7 @@ const DisplayDrawingsPage: React.FC<DisplayDrawingsPageProps> = ({ roomId, onBac
       </div>
     </div>
   );
+  
 };
 
 export default DisplayDrawingsPage;

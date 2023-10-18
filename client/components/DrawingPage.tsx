@@ -7,6 +7,7 @@ import { useSocket } from '../contexts/SocketContext';
 
 interface DrawingPageProps {
   roomId: string | string[] | undefined;
+  previousGuess: string;
   onViewDrawings: () => void;
 }
 
@@ -43,14 +44,12 @@ const DrawingPage: React.FC<DrawingPageProps> = ({ roomId, onViewDrawings }) => 
     // Set the canvas size (customize as needed)
     canvas.setWidth(800);
     canvas.setHeight(600);
-  
-    // Store the canvas instance in a ref
     canvasRef.current = canvas;
   
     return () => {
       canvas.dispose();
     };
-  }, []); // <-- Remove the dependencies
+  }, []);
   
   // Add a new effect for updating the brush
   useEffect(() => {

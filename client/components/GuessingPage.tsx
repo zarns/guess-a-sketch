@@ -7,11 +7,11 @@ import { useSocket } from '../contexts/SocketContext';
 
 interface GuessingPageProps {
   roomId: string | string[] | undefined;
-  drawingDataUrl: string; // The data URL of the drawing to guess
+  drawingToGuess: string; // The data URL of the drawing to guess
   onSubmit: () => void; // Callback to notify parent component when a guess is submitted
 }
 
-const GuessingPage: React.FC<GuessingPageProps> = ({ roomId, drawingDataUrl, onSubmit }) => {
+const GuessingPage: React.FC<GuessingPageProps> = ({ roomId, drawingToGuess, onSubmit }) => {
   const socket = useSocket();
   const [guess, setGuess] = useState('');
 
@@ -25,7 +25,7 @@ const GuessingPage: React.FC<GuessingPageProps> = ({ roomId, drawingDataUrl, onS
   return (
     <div className="guessing-page">
       <h2>What do you think this drawing represents?</h2>
-      <img src={drawingDataUrl} alt="Drawing to guess" />
+      <img src={drawingToGuess} alt="Drawing to guess" />
       <input
         type="text"
         value={guess}

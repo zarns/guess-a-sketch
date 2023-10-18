@@ -58,6 +58,7 @@
 
 .guess-description {
   font-size: 2rem;
+  text-align: center;
   font-weight: bold;
   color: white;
   margin-top: .5rem;
@@ -65,5 +66,57 @@
   padding: 0.5rem 1rem;
   border-radius: 0.375rem;
   background-image: linear-gradient(to top, rgba(0, 0, 60, 0.7), rgba(20, 20, 200, 0.9));
+  transition: background-color 0.3s;
+}
+
+.original-word-description {
+  font-size: 2rem;
+  text-align: center;
+  font-weight: bold;
+  color: white;
+  margin-top: .5rem;
+  margin-bottom: 0.5rem;
+  padding: 0.5rem 1rem;
+  border-radius: 0.375rem;
+  background-image: linear-gradient(to top, rgba(0, 0, 60, 0.7), rgba(20, 20, 200, 0.9));
+  transition: background-color 0.3s;
+}
+
+.artist-description {
+  font-size: 2rem;
+  text-align: center;
+  font-weight: bold;
+  color: white;
+  margin-top: .5rem;
+  margin-bottom: 0.5rem;
+  padding: 0.5rem 1rem;
+  border-radius: 0.375rem;
+  background-image: linear-gradient(to top, rgba(0, 0, 60, 0.7), rgba(20, 20, 200, 0.9));
+  transition: background-color 0.3s;
+}
+
+.title-description {
+  max-width: 70%; /* Adjust the maximum width */
+  margin-left: auto; /* Center the box */
+  margin-right: auto; /* Center the box */  
+  font-size: 2rem;
+  text-align: center;
+  font-weight: bold;
+  color: white;
+  margin-top: .5rem;
+  margin-bottom: 0.5rem;
+  padding: 0.5rem 1rem;
+  border-radius: 0.375rem;
+  background-image: linear-gradient(to top, rgba(60, 0, 0, 0.7), rgba(200, 20, 20, 0.9));
+  transition: background-color 0.3s;
+}
+
+.flipbook-container {
+  background: rgba(128, 128, 128, 0.5); /* Translucent gray background */
+  border-radius: 10px; /* Rounded corners */
+  padding: 1rem; /* Padding around the content */
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+  margin-top: .5rem;
+  margin-bottom: 0.5rem;
   transition: background-color 0.3s;
 }
