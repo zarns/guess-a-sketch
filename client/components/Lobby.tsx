@@ -29,7 +29,6 @@ const Lobby: React.FC<LobbyProps> = ({ roomId, onStartGame }) => {
     try {
       const response = await fetch(`http://localhost:3001/getHost?roomId=${roomId}`);
       const data = await response.json();
-      console.log('data.host:', data.hostId)
       if (socket && data.hostId === socket.id) {
         setIsHost(true);
       }

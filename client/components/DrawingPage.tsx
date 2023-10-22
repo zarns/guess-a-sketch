@@ -71,7 +71,7 @@ const DrawingPage: React.FC<DrawingPageProps> = ({ roomId, onViewDrawings }) => 
     if (socket) {
       socket.emit('saveDrawing', { roomId, drawingDataUrl });
       setWaitingForFlipbook(true);
-      console.log("drawingPage emitting saveDrawing");
+      console.log("DrawingPage emitted saveDrawing");
       socket.emit('requestNextFlipbook', { roomId, currFlipbookOwner });
     }
 
@@ -216,12 +216,12 @@ const DrawingPage: React.FC<DrawingPageProps> = ({ roomId, onViewDrawings }) => 
             gap: '1rem',
           }}
         >
-          {/* <button
+          <button
             onClick={handleSubmitDrawing}
             className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
           >
             Submit
-          </button> */}
+          </button>
           <button
             onClick={handleViewAllDrawings}
             className="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"

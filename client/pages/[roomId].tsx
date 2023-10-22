@@ -18,6 +18,15 @@ const Room: React.FC = () => {
   const [previousWord, setPreviousWord] = useState<string | null>(null);
   const [previousDrawing, setPreviousDrawing] = useState<string | null>(null);
 
+  useEffect(() => {
+    console.log(`Current Round: ${currentRound}`);
+    if (currentRound % 2 === 0) {
+      setPreviousWord("delete me");
+    } else {
+      setPreviousDrawing("asdfasdfasdf");
+    }
+  }, [currentRound]);
+
   const handleGameStarted = () => {
     setCurrentRound(1);
     setGameStarted(true);
@@ -41,12 +50,16 @@ const Room: React.FC = () => {
     if (socket) {
       socket.on('flipbookData', (latestPage, newCurrentRound) => {
         setPreviousDrawing(latestPage.drawingDataUrl);
+        console.log("flipbookData event. setPreviousDrawing");
+      });
+      socket.on('nextRound', (newCurrentRound) => {
         setCurrentRound(newCurrentRound);
       });
     }
     return () => {
       if (socket) {
         socket.off('flipbookData');
+        socket.off('nextRound');
       }
     };
   }, [socket]);
@@ -65,10 +78,10 @@ const Room: React.FC = () => {
         <Lobby roomId={roomId} onStartGame={handleGameStarted} onGameStarted={handleGameStarted} />
       )}
       {gameStarted && !showDrawings && currentRound % 2 === 1 && (
-        <DrawingPage roomId={roomId} previousWord={previousWord} onViewDrawings={handleShowDrawings} />
+        <DrawingPage roomId={roomId} previousGuess={previousWord} onViewDrawings={handleShowDrawings} />
       )}
       {gameStarted && !showDrawings && currentRound % 2 === 0 && (
-        <GuessingPage roomId={roomId} previousDrawing={previousDrawing} onViewDrawings={handleShowDrawings} />
+        <GuessingPage roomId={roomId} drawingToGuess={previousDrawing} onViewDrawings={handleShowDrawings} />
       )}
       {gameStarted && showDrawings && (
         <DisplayDrawingsPage roomId={roomId} onBack={() => setShowDrawings(false)} />

@@ -7,32 +7,105 @@ import { useSocket } from '../contexts/SocketContext';
 
 interface GuessingPageProps {
   roomId: string | string[] | undefined;
-  drawingToGuess: string; // The data URL of the drawing to guess
-  onSubmit: () => void; // Callback to notify parent component when a guess is submitted
+  drawingToGuess: string;
+  onViewDrawings: () => void;
 }
 
-const GuessingPage: React.FC<GuessingPageProps> = ({ roomId, drawingToGuess, onSubmit }) => {
+const GuessingPage: React.FC<GuessingPageProps> = ({ roomId, drawingToGuess, onViewDrawings }) => {
   const socket = useSocket();
   const [guess, setGuess] = useState('');
+  const [timer, setTimer] = useState(5);
+  const [currFlipbookOwner, setCurrFlipbookOwner] = useState<string | null>(null);
+  const [waitingForFlipbook, setWaitingForFlipbook] = useState(false);
 
-  const handleGuessSubmit = () => {
-    if (socket && guess.trim()) {
-      socket.emit('submitGuess', { roomId, guess });
-      onSubmit(); // Notify parent component
+  const handleSubmitGuess = () => {
+    if (socket) {
+      socket.emit('saveGuess', { roomId, guess });
+      setWaitingForFlipbook(true);
+      console.log("GuessingPage emitted saveGuess");
+      socket.emit('requestNextFlipbook', { roomId, currFlipbookOwner });
+    }
+    
+    console.log('Guess submitted:', guess);
+  };
+  const handleViewAllDrawings = () => {
+    if (socket) {
+      socket.emit('viewAllDrawings', roomId);
+      onViewDrawings(); // Call the onViewDrawings prop function
     }
   };
 
+  useEffect(() => {
+    const countdown = setInterval(() => {
+      setTimer((prevTimer) => prevTimer - 1);
+    }, 1000);
+
+    if (timer === 0) {
+      handleSubmitGuess();
+      clearInterval(countdown);
+    }
+
+    return () => clearInterval(countdown);
+  }, [timer]);
+
+  useEffect(() => {
+    if (socket) {
+      // Add listener for 'viewAllDrawings' event
+      socket.on('viewAllDrawings', () => {
+        handleViewAllDrawings(); // Fetch and display drawings when the event is received
+      });
+  
+      // Clean up the listener when the component is unmounted
+      return () => {
+        socket.off('viewAllDrawings');
+      };
+    }
+  }, [socket]);
+
   return (
-    <div className="guessing-page">
-      <h2>What do you think this drawing represents?</h2>
-      <img src={drawingToGuess} alt="Drawing to guess" />
-      <input
-        type="text"
-        value={guess}
-        onChange={(e) => setGuess(e.target.value)}
-        placeholder="Type your guess here..."
-      />
-      <button onClick={handleGuessSubmit}>Submit Guess</button>
+    <div>
+      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '1rem' }}>
+        <h1
+          style={{
+            fontSize: '2rem',
+            fontWeight: 'bold',
+            color: 'white',
+            marginTop: '.5rem',
+            marginBottom: '0.5rem',
+            padding: '0.5rem 1rem',
+            borderRadius: '0.375rem',
+            backgroundImage: 'linear-gradient(to top, rgba(0, 0, 60, 0.7), rgba(20, 20, 200, 0.9))',
+            transition: 'background-color 0.3s',
+          }}
+        >
+          Room {roomId}
+        </h1>
+      </div>
+      <div className="guessing-page">
+        <h2>What do you think this drawing represents?</h2>
+        <img src={drawingToGuess} alt="Drawing to guess" style={{ border: '1px solid black' }} />
+        DrawingD URL: ${drawingToGuess}
+        <br></br>
+        <input
+          type="text"
+          value={guess}
+          onChange={(e) => setGuess(e.target.value)}
+          placeholder="Type your guess here..."
+          style={{ marginTop: '20px', padding: '10px', fontSize: '16px' }}
+        />
+        <button
+          onClick={handleSubmitGuess}
+          className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+        >
+          Submit
+        </button>
+        <button
+          onClick={handleViewAllDrawings}
+          className="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
+        >
+          View Drawings
+        </button>
+      </div>
     </div>
   );
 };

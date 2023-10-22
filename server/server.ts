@@ -94,11 +94,13 @@ io.on('connection', (socket) => {
     if (currRound === -1) {
       return;
     }
+    console.log("delete me");
+
     socket.emit('nextRound', currRound);
   });
 
-  socket.on('submitGuess', ({ roomId, guess }) => {
-    console.log(`submitGuess event in room: ${roomId}`);
+  socket.on('saveGuess', ({ roomId, guess }) => {
+    console.log(`saveGuess event in room: ${roomId}`);
     const room = rooms.getRoom(roomId);
     if (!room) {
       console.error('Error: room not found');

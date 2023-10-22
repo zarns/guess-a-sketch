@@ -22,11 +22,13 @@ class Room {
   }
 
   transitionPhase() {
+    console.log(`Curr: ${this.currentRound}`);
     this.currentRound += 1;
   }
 
   // Method to check if all users have completed their action for the current phase
   checkPhaseCompletion() {
+    console.log(`CheckingPhaseCompletion`);
     // Check if all FlipBooks have an entry for the current round and phase
     for (let flipBook of this.flipBooks.values()) {
       if (!flipBook.hasEntryForRound(this.currentRound)) {
@@ -79,7 +81,7 @@ class Room {
   }
 
   saveDrawing(socket: Socket, drawingDataUrl: string) {
-    let username = this.usernameMap.get(socket);
+    const username = this.usernameMap.get(socket);
     console.log(`flipbooks: ${Array.from(this.flipBooks.keys()).join(', ')}`);
 
     if (!username) {
@@ -96,8 +98,8 @@ class Room {
     }
 
     flipbook.addDrawing(username, drawingDataUrl);
-    console.log(`Drawing saved for room ${this.id}`);
-    this.checkPhaseCompletion();
+    console.log(`Drawing saved for ${username} in room ${this.id}`);
+    // this.checkPhaseCompletion();
   }
 
   saveGuess(socket: Socket, guess: string) {
@@ -116,8 +118,8 @@ class Room {
     }
 
     flipBook.addGuess(username, guess);
-    console.log(`${username} guessed (${guess}) in room ${this.id}`);
-    this.checkPhaseCompletion();
+    console.log(`Guess saved for ${username} in room ${this.id}. Guess: ${guess}`);
+    // this.checkPhaseCompletion();
   }
 
   viewAllDrawings(): Array<{ username: string, data: { username: string, type: 'drawing' | 'guess', content: string }[] }> {
@@ -125,6 +127,7 @@ class Room {
   
     for (const [username, flipbook] of this.flipBooks.entries()) {
       const pages = flipbook.getPages();
+      console.log(`pages: ${pages}`);
       allFlipbooks.push({ username, data: pages });
     }
   
