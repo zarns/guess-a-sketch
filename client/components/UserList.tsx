@@ -20,28 +20,31 @@ const UserList: React.FC = () => {
   }, []);
 
   return (
-    <div className="max-w-md mx-auto">
-      <h1 className="text-4xl font-bold mb-8 text-center text-black font-permanent-marker">
-        User List:
-      </h1>
+    <div className="about-container">
+      <h1 className="about-title">Active Rooms:</h1>
       <div className="flex flex-col space-y-8">
-        {<ul className="grid">
-
-          {usernames.map((room, index) => (
-            <li key={index}>
-              <ul>
-                {room.map((username, index) => (
-                  <li
-                  key={index}
-                  className={index === 0 ? 'font-bold text-lg' : ''}
-                  >
-                  {index === 0 ? `Room ${username}:` : username}
-                  </li>
-                ))}
-              </ul>
-            </li>
-          ))}
-        </ul>}
+        <div className="about-text-box">
+          {usernames.length === 0 ? (
+            <p>No active rooms at the moment.</p>
+          ) : (
+            <ul className="grid">
+              {usernames.map((room, index) => (
+                <li key={index}>
+                  <ul>
+                    {room.map((username, index) => (
+                      <li
+                      key={index}
+                      className={index === 0 ? 'font-bold text-lg' : ''}
+                      >
+                      {index === 0 ? `Room ${username}:` : username}
+                      </li>
+                    ))}
+                  </ul>
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
       </div>
     </div>
   );

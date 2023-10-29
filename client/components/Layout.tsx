@@ -28,7 +28,7 @@ const Layout = ({ children, title = 'goofy drawings' }: Props) => (
         <Link href="/about" className="hover:text-yellow-300 transition duration-200">
           About
         </Link> | {' '}
-        <Link href="/users" className="hover:text-yellow-300 transition duration-200">
+        <Link href="/activity" className="hover:text-yellow-300 transition duration-200">
           Activity
         </Link>
       </nav>
