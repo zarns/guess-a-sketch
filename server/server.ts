@@ -39,7 +39,9 @@ io.on('connection', (socket) => {
     }
     
     room.buildFlipBooks();
-    
+    room.setPassingOrder();
+    room.setMaxRounds();
+
     socket.to(roomId).emit('gameStarted');
   });  
 
@@ -95,8 +97,7 @@ io.on('connection', (socket) => {
       return;
     }
     console.log("delete me");
-
-    socket.emit('nextRound', currRound);
+    handleNextRoundStarted(roomId, currRound);
   });
 
   socket.on('saveGuess', ({ roomId, guess }) => {
@@ -108,6 +109,12 @@ io.on('connection', (socket) => {
       return;
     }
     room.saveGuess(socket, guess);
+    const currRound = room.checkPhaseCompletion();
+    if (currRound === -1) {
+      return;
+    }
+    console.log("delete me");
+    handleNextRoundStarted(roomId, currRound);
   });
 
   socket.on('viewAllDrawings', (roomId: string) => {
@@ -160,3 +167,20 @@ const PORT = process.env.PORT || 3001;
 server.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
+
+function handleNextRoundStarted(roomId: string, currRound: number) {
+  const room = rooms.getRoom(roomId);
+  if (!room) {
+    console.error('Error: room not found');
+    return;
+  }
+  if (currRound > room.maxRounds) {
+    console.log(`Game Complete after ${room.maxRounds} rounds`);
+    room.emitEndGameToAllPlayers();
+    return;
+  }
+  room.emitNextRoundToAllPlayers(currRound);
+  return;
+}
+
+

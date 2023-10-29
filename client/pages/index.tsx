@@ -3,7 +3,7 @@ import Layout from '../components/Layout';
 import Game from '../components/Game';
 
 const IndexPage = () => (
-  <Layout title="Telestrations">
+  <Layout title="Guess-A-Sketch">
     <div
       className="bg-cover bg-center h-screen"
       style={{

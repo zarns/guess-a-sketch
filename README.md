@@ -1,4 +1,4 @@
-# Telestrations
+# Guess-A-Sketch
 
 Check out my [portfolio](https://mason.zarns.net)
 
@@ -7,7 +7,7 @@ Check out my [portfolio](https://mason.zarns.net)
 1. Clone the repo
 
    ```sh
-   git clone https://github.com/zarns/telestrations.git
+   git clone https://github.com/zarns/guess-a-sketch.git
    ```
 
 2. Setup environment

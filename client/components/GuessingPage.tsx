@@ -22,7 +22,6 @@ const GuessingPage: React.FC<GuessingPageProps> = ({ roomId, drawingToGuess, onV
     if (socket) {
       socket.emit('saveGuess', { roomId, guess });
       setWaitingForFlipbook(true);
-      console.log("GuessingPage emitted saveGuess");
       socket.emit('requestNextFlipbook', { roomId, currFlipbookOwner });
     }
     
@@ -80,6 +79,21 @@ const GuessingPage: React.FC<GuessingPageProps> = ({ roomId, drawingToGuess, onV
         >
           Room {roomId}
         </h1>
+        <h2
+          style={{
+            fontSize: '2rem',
+            fontWeight: 'bold',
+            color: 'white',
+            marginTop: '.5rem',
+            marginBottom: '0.5rem',
+            padding: '0.5rem 1rem',
+            borderRadius: '0.375rem',
+            backgroundColor: timer < 10 ? 'red' : 'blue',
+            transition: 'background-color 0.3s',
+          }}
+        >
+          Timer: {timer} Seconds
+        </h2>
       </div>
       <div className="guessing-page">
         <h2>What do you think this drawing represents?</h2>

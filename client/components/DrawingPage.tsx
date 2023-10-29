@@ -11,7 +11,7 @@ interface DrawingPageProps {
   onViewDrawings: () => void;
 }
 
-const DrawingPage: React.FC<DrawingPageProps> = ({ roomId, onViewDrawings }) => {
+const DrawingPage: React.FC<DrawingPageProps> = ({ roomId, previousGuess, onViewDrawings }) => {
   const socket = useSocket();
   const canvasRef = useRef(null);
   const [color, setColor] = useState('#000000');
@@ -162,8 +162,13 @@ const DrawingPage: React.FC<DrawingPageProps> = ({ roomId, onViewDrawings }) => 
             transition: 'background-color 0.3s',
           }}
         >
-          Time Remaining: {timer} Seconds
+          Timer: {timer} Seconds
         </h2>
+      </div>
+      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '1rem' }}>
+      <div className="previous-guess">
+          Draw: {previousGuess}
+        </div>
       </div>
       <div style={{marginBottom:'20px'}}>
         <canvas ref={canvasRef} style={{ border: '1px solid black' }} />

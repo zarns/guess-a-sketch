@@ -55,11 +55,15 @@ const Room: React.FC = () => {
       socket.on('nextRound', (newCurrentRound) => {
         setCurrentRound(newCurrentRound);
       });
+      socket.on('endGame', () => {
+        setShowDrawings(true);
+      });
     }
     return () => {
       if (socket) {
         socket.off('flipbookData');
         socket.off('nextRound');
+        socket.off('endGame');
       }
     };
   }, [socket]);

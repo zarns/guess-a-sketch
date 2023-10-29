@@ -12,6 +12,8 @@ class Room {
   usernameMap: Map<Socket, string>;
   flipBooks: Map<string, FlipBook>;
   currentRound: number; // New variable to track the current round
+  passingOrder: Socket[]; // New variable to track the passing order
+  maxRounds: number;
 
   constructor(roomId: string, creator: Socket, creatorUsername: string) {
     this.id = roomId;
@@ -19,6 +21,8 @@ class Room {
     this.usernameMap = new Map([[creator, creatorUsername]]);
     this.flipBooks = new Map();
     this.currentRound = 1; // Initialize currentRound to 1
+    this.passingOrder = [];
+    this.maxRounds = 1;
   }
 
   transitionPhase() {
@@ -78,6 +82,32 @@ class Room {
       this.flipBooks.set(username, new FlipBook(word));
       wordIndex++;
     });
+  }
+
+  setPassingOrder() {
+    this.usernameMap.forEach((username, socket) => {
+      this.passingOrder.push(socket);
+    });
+    this.shufflePassingOrder();
+
+    const usernamesInPassingOrder = this.passingOrder.map(socket => this.usernameMap.get(socket) || 'Unknown');
+    console.log(`Passing order: ${usernamesInPassingOrder.join(', ')}`);
+    return;
+  }
+
+  setMaxRounds() {
+    const numUsers = this.usernameMap.size;
+    const numRounds = numUsers;
+    console.log(`Setting max rounds to ${numRounds}`);
+    this.maxRounds = numRounds;
+    return;
+  }
+
+  private shufflePassingOrder() {
+    for (let i = this.passingOrder.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [this.passingOrder[i], this.passingOrder[j]] = [this.passingOrder[j], this.passingOrder[i]];
+    }
   }
 
   saveDrawing(socket: Socket, drawingDataUrl: string) {
@@ -143,8 +173,17 @@ class Room {
     return Array.from(uniqueWords);
   }
 
-  // getNextFlipbook():  {
-  // }
+  emitNextRoundToAllPlayers(currRound: number) {
+    this.usernameMap.forEach((username, socket) => {
+      socket.emit('nextRound', currRound);
+    });
+  }
+
+  emitEndGameToAllPlayers() {
+    this.usernameMap.forEach((username, socket) => {
+      socket.emit('endGame');
+    });
+  }
 }
 
 class Rooms {

@@ -45,7 +45,7 @@ const Game: React.FC = () => {
 
   return (
     <div className="max-w-md mx-auto">
-      <h1 className="text-4xl font-bold mb-8 text-center text-black font-permanent-marker">Telestrations</h1>
+      <h1 className="text-4xl font-bold mb-8 text-center text-black font-permanent-marker">Guess-A-Sketch</h1>
       <div className="flex flex-col space-y-8">
         <form
           onSubmit={(e) => {
