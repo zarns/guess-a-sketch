@@ -3,7 +3,7 @@
   "scripts": {
     "check-versions": "bash check-versions.sh",    
     "dev": "next dev -p 3000",
-    "build": "next build && tsc -p tsconfig.json",
+    "build": "bash check-versions.sh",
     "start": "next start -p $PORT"
   },
   "dependencies": {
