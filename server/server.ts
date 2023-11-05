@@ -5,6 +5,9 @@ import { Server, Socket } from 'socket.io';
 import { createServer } from 'http';
 import Rooms from './rooms';
 import FlipBook from './flipbook';
+import http from 'http';
+
+
 
 
 const app = express();
@@ -13,7 +16,7 @@ app.use(cors()); // Enable CORS for all routes
 const server = createServer(app);
 const io = new Server(server, {
   cors: {
-    origin: 'http://localhost:3000', // Allow the client's origin
+    origin: ['http://localhost:3000', 'https://guess-a-sketch-client.onrender.com', 'https://guess-a-sketch.onrender.com', 'https://sketch.zarns.net'], // Allow the client's origin
     methods: ['GET', 'POST'],
   },
 });
