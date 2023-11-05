@@ -16,7 +16,7 @@ Check out my [portfolio](https://mason.zarns.net)
    npm install
    ```
 
-3. From the `client` and `server` directories, run locally on `port 3000`
+3. From the `client` and `server` directories, run locally on `port 3000`. Modify /client/.env to point to localhost:3001 instead of the URL from render.com
 
    ```sh
    npm run dev
