@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 
 // client/api/allusernames.ts
 export async function getUsernames(): Promise<string[][]> {
-  const response = await fetch('http://localhost:3001/allUsernames');
+  const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/allUsernames`);
   const data = await response.json();
   const allUsernames: string[][] = data.allUsernames;
   return allUsernames;

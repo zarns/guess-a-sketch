@@ -26,6 +26,45 @@ Check out my [portfolio](https://mason.zarns.net)
     * The server should run on port 3001
     * Edit a file and save. Watch changes deploy locally in seconds. Start with `src/data/data.tsx`
 
+## Deployment to AKS
+
+1. Install
+    * Docker Desktop
+    * Azure CLI
+    * kubectl
+
+2. Run locally. From root directory
+
+   ```sh
+   docker-compose up
+   ```
+
+3. Build Docker images and push images to Docker Hub
+
+   ```sh
+   docker-compose build
+   docker-compose push
+   ```
+
+4. Apply manifest.yml to deploy to Azure Kubernetes Service (AKS)
+
+   ```sh
+   kubectl apply -f k8s/manifest.yml
+   ```
+
+5. Useful
+
+   ```sh
+   az aks get-credentials --resource-group <resource-group-name> --name <aks-cluster-name>
+   kubectl get deployments
+   kubectl get services
+   kubectl get pods
+   kubectl logs server-deployment-7f5f9d746f-hzrsg
+   kubectl logs client-deployment-6cb48766b4-9djxd
+   ```
+
+6. More
+
 ## Acknowledgments
 
 Major thanks to these resources:

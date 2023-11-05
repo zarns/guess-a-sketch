@@ -17,7 +17,7 @@ export const SocketProvider: React.FC<SocketProviderProps> = ({ children }) => {
   const router = useRouter();
 
   useEffect(() => {
-    const newSocket = io('http://localhost:3001');
+    const newSocket = io(`${process.env.NEXT_PUBLIC_SERVER_URL}`);
     setSocket(newSocket);
 
     newSocket.on('roomCreated', (roomId: string) => {

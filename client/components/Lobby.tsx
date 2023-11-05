@@ -17,7 +17,7 @@ const Lobby: React.FC<LobbyProps> = ({ roomId, onStartGame }) => {
 
   const fetchUsers = async () => {
     try {
-      const response = await fetch(`http://localhost:3001/getUsernamesInARoom?roomId=${roomId}`);
+      const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/getUsernamesInARoom?roomId=${roomId}`);
       const data = await response.json();
       setUsers(data.usernames);
     } catch (error) {
@@ -27,7 +27,7 @@ const Lobby: React.FC<LobbyProps> = ({ roomId, onStartGame }) => {
 
   const fetchHost = async () => {
     try {
-      const response = await fetch(`http://localhost:3001/getHost?roomId=${roomId}`);
+      const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/getHost?roomId=${roomId}`);
       const data = await response.json();
       if (socket && data.hostId === socket.id) {
         setIsHost(true);
