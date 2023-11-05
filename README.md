@@ -63,7 +63,7 @@ Check out my [portfolio](https://mason.zarns.net)
    kubectl logs client-deployment-6cb48766b4-9djxd
    ```
 
-6. More
+6. Realize Azure AKS costs ~$5/day. Deploy docker images to the free tier of [render.com](https://render.com/) instead!
 
 ## Acknowledgments
 
