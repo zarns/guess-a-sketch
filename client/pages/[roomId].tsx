@@ -70,12 +70,16 @@ const Room: React.FC = () => {
   
   return (
     <div
-      className="bg-contain"
-      style={{
-        backgroundImage: "url(../whiteboard_background_seamless.jpg)",
-        backgroundRepeat: "repeat-y",
-        backgroundPosition: "center"
-      }}
+    className="bg-contain"
+    style={{
+      backgroundImage: "url('../whiteboard_background_seamless.jpg')",
+      backgroundRepeat: 'repeat-y', // Repeats the background image vertically
+      backgroundSize: showDrawings ? 'auto' : 'cover',
+      backgroundPosition: 'center',
+      height: 'auto', // Adjust the height as per your content
+      minHeight: '100vh', // Ensures minimum height of the viewport
+      width: '100vw',
+    }}
     >
     <div className="flex flex-col items-center w-full h-full">
       {!gameStarted && (
