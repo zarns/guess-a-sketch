@@ -65,14 +65,18 @@ const Lobby: React.FC<LobbyProps> = ({ roomId, onStartGame }) => {
 
   return (
     <div>
-      <h2>Users in Room {roomId}:</h2>
-      <ul>
+      <h2 className='page-description'>
+        Users in Room {roomId}:
+      </h2>
+      <ul className="user-list">
         {users && users.map((user, index) => (
-          <li key={index}>{user}</li>
+          <li key={index} className="username-display">
+            {user}
+          </li>
         ))}
       </ul>
       {isHost && (
-        <button onClick={handleStartGame} className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+        <button onClick={handleStartGame} className="start-game-button">
           Start Game
         </button>
       )}
