@@ -20,11 +20,6 @@ const Room: React.FC = () => {
 
   useEffect(() => {
     console.log(`Current Round: ${currentRound}`);
-    if (currentRound % 2 === 0) {
-      setPreviousWord("delete me");
-    } else {
-      setPreviousDrawing("asdfasdfasdf");
-    }
   }, [currentRound]);
 
   const handleGameStarted = () => {
@@ -48,7 +43,12 @@ const Room: React.FC = () => {
 
   useEffect(() => {
     if (socket) {
-      socket.on('flipbookData', (latestPage, newCurrentRound) => {
+      socket.on('flipbookData', (latestPage) => {
+        if (latestPage?.type === 'guess') {
+          setPreviousWord(latestPage?.content);
+        } else {
+          setPreviousDrawing(latestPage?.content);
+        }
         setPreviousDrawing(latestPage.drawingDataUrl);
         console.log("flipbookData event. setPreviousDrawing");
       });

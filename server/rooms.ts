@@ -44,24 +44,6 @@ class Room {
     return this.currentRound;
   }
 
-  getNextFlipbookFor(socket: Socket): FlipBook | undefined {
-    const username = this.usernameMap.get(socket);
-    if (!username) {
-      console.error(`Error: username not found in the usernameMap`);
-      console.log(`usernameMap: ${this.usernameMap.size}`);
-      return;
-    }
-
-    const flipbook = this.flipBooks.get(username);
-
-    if (!flipbook) {
-      console.error(`Error: username ${username} not found in the flipBooks map`);
-      return;
-    }
-
-    return flipbook;
-  }
-
   addUser(user: Socket, username: string): void {
     this.usernameMap.set(user, username);
   }
@@ -85,22 +67,26 @@ class Room {
   }
 
   setPassingOrder() {
-    this.usernameMap.forEach((username, socket) => {
-      this.passingOrder.push(socket);
-    });
+    this.passingOrder = Array.from(this.usernameMap.keys());
     this.shufflePassingOrder();
-
-    const usernamesInPassingOrder = this.passingOrder.map(socket => this.usernameMap.get(socket) || 'Unknown');
-    console.log(`Passing order: ${usernamesInPassingOrder.join(', ')}`);
-    return;
+    console.log(`Passing order: ${this.passingOrder.join(', ')}`);
   }
 
-  setMaxRounds() {
-    const numUsers = this.usernameMap.size;
-    const numRounds = numUsers;
-    console.log(`Setting max rounds to ${numRounds}`);
-    this.maxRounds = numRounds;
-    return;
+  getNextFlipbookFor(socket: Socket): FlipBook | undefined {
+    const userIndex = this.passingOrder.indexOf(socket);
+    if (userIndex === -1) {
+      console.error(`Error: Socket not found in passingOrder`);
+      return;
+    }
+    const passingIndex = (userIndex + this.currentRound) % this.passingOrder.length;
+    const passingUserSocket = this.passingOrder[passingIndex];
+    const passingUsername = this.usernameMap.get(passingUserSocket);
+
+    if (!passingUsername) {
+      console.error(`Error: Passing username not found in the usernameMap`);
+      return;
+    }
+    return this.flipBooks.get(passingUsername);
   }
 
   private shufflePassingOrder() {
@@ -108,6 +94,13 @@ class Room {
       const j = Math.floor(Math.random() * (i + 1));
       [this.passingOrder[i], this.passingOrder[j]] = [this.passingOrder[j], this.passingOrder[i]];
     }
+  }
+
+  setMaxRounds() {
+    const numUsers = this.usernameMap.size;
+    this.maxRounds = numUsers;
+    console.log(`Setting max rounds to ${numUsers}`);
+    return;
   }
 
   saveDrawing(socket: Socket, drawingDataUrl: string) {
@@ -157,7 +150,7 @@ class Room {
   
     for (const [username, flipbook] of this.flipBooks.entries()) {
       const pages = flipbook.getPages();
-      console.log(`pages: ${pages}`);
+      // console.log(`pages: ${pages}`);
       allFlipbooks.push({ username, data: pages });
     }
   
@@ -175,6 +168,8 @@ class Room {
 
   emitNextRoundToAllPlayers(currRound: number) {
     this.usernameMap.forEach((username, socket) => {
+      const latestPage = this.getNextFlipbookFor(socket)?.getLatestPage();
+      socket.emit('flipbookData', latestPage);
       socket.emit('nextRound', currRound);
     });
   }
