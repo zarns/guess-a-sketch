@@ -1,6 +1,6 @@
 # Guess-A-Sketch
 
-Check out my [portfolio](https://mason.zarns.net)
+Deployed at [sketch.zarns.net](https://sketch.zarns.net). The backend is takes a minute to spin up because it's hosted on the free tier of [render.com](https://render.com/). Also, check out my [portfolio](https://mason.zarns.net)
 
 ## Installation
 
@@ -63,7 +63,7 @@ Check out my [portfolio](https://mason.zarns.net)
    kubectl logs client-deployment-6cb48766b4-9djxd
    ```
 
-6. Realize Azure AKS costs ~$5/day. Deploy docker images to the free tier of [render.com](https://render.com/) instead!
+6. Realize Azure AKS is charging ~$5/day. Deploy frontend to Vercel and backend to the free tier of [render.com](https://render.com/) instead!
 
 ## Acknowledgments
 
