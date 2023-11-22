@@ -8,6 +8,12 @@ import DisplayDrawingsPage from '../components/DisplayDrawingsPage';
 import GuessingPage from '../components/GuessingPage';
 import { useSocket } from '../contexts/SocketContext';
 
+interface FlipBookPage {
+  username: string;
+  type: 'drawing' | 'guess';
+  content: string;
+}
+
 const Room: React.FC = () => {
   const router = useRouter();
   const { roomId } = router.query;
@@ -17,6 +23,7 @@ const Room: React.FC = () => {
   const [currentRound, setCurrentRound] = useState<number>(0);
   const [previousWord, setPreviousWord] = useState<string | null>(null);
   const [previousDrawing, setPreviousDrawing] = useState<string | null>(null);
+  const [previousAuthor, setPreviousAuthor] = useState<string | null>(null);
 
   useEffect(() => {
     console.log(`Current Round: ${currentRound}`);
@@ -43,14 +50,16 @@ const Room: React.FC = () => {
 
   useEffect(() => {
     if (socket) {
-      socket.on('flipbookData', (latestPage) => {
-        if (latestPage?.type === 'guess') {
-          setPreviousWord(latestPage?.content);
+      socket.on('flipbookData', (latestPage: FlipBookPage) => {
+        const { type, username, content } = latestPage;
+        console.log(`Type: ${type}, Username: ${username}, Content: ${content}`);     
+
+        setPreviousAuthor(username);
+        if (type === 'guess') {
+          setPreviousWord(content);
         } else {
-          setPreviousDrawing(latestPage?.content);
+          setPreviousDrawing(content);
         }
-        setPreviousDrawing(latestPage.drawingDataUrl);
-        console.log("flipbookData event. setPreviousDrawing");
       });
       socket.on('nextRound', (newCurrentRound) => {
         setCurrentRound(newCurrentRound);

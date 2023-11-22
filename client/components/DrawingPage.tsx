@@ -17,7 +17,6 @@ const DrawingPage: React.FC<DrawingPageProps> = ({ roomId, previousGuess, onView
   const [color, setColor] = useState('#000000');
   const [brushSize, setBrushSize] = useState(10);
   const [timer, setTimer] = useState(5);
-  const [currFlipbookOwner, setCurrFlipbookOwner] = useState<string | null>(null);
   const [waitingForFlipbook, setWaitingForFlipbook] = useState(false);
 
   const colors = [
@@ -72,7 +71,7 @@ const DrawingPage: React.FC<DrawingPageProps> = ({ roomId, previousGuess, onView
       socket.emit('saveDrawing', { roomId, drawingDataUrl });
       setWaitingForFlipbook(true);
       console.log("DrawingPage emitted saveDrawing");
-      socket.emit('requestNextFlipbook', { roomId, currFlipbookOwner });
+      socket.emit('requestNextFlipbook', { roomId });
     }
 
     console.log('Drawing submitted');
@@ -97,25 +96,6 @@ const DrawingPage: React.FC<DrawingPageProps> = ({ roomId, previousGuess, onView
 
     return () => clearInterval(countdown);
   }, [timer]);
-
-  useEffect(() => {
-    if (socket) {
-      socket.on('newFlipbook', ({ owner }) => {
-        if (canvasRef.current) {
-          const canvas = canvasRef.current;
-          canvas.clear();
-        }
-        
-        setCurrFlipbookOwner(owner);
-        setWaitingForFlipbook(false); // Flipbook is received, stop waiting
-      });
-  
-      return () => {
-        socket.off('newFlipbook');
-      };
-    }
-  }, [socket]);
-  
 
   useEffect(() => {
     if (socket) {

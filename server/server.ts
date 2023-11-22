@@ -27,7 +27,7 @@ io.on('connection', (socket) => {
   console.log('User connected:', socket.id);
 
   socket.on('createRoom', (creatorUsername: string) => {
-    const roomId = Math.floor(Math.random() * 1000).toString(); // Generate a random room number and convert it to a string
+    const roomId = Math.floor(Math.random() * 10).toString(); // Generate a random room number and convert it to a string
     socket.join(roomId);
     rooms.createRoom(roomId, socket, creatorUsername); // Add the room to the Rooms instance
     socket.emit('roomCreated', roomId);

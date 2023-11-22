@@ -15,14 +15,13 @@ const GuessingPage: React.FC<GuessingPageProps> = ({ roomId, drawingToGuess, onV
   const socket = useSocket();
   const [guess, setGuess] = useState('');
   const [timer, setTimer] = useState(5);
-  const [currFlipbookOwner, setCurrFlipbookOwner] = useState<string | null>(null);
   const [waitingForFlipbook, setWaitingForFlipbook] = useState(false);
 
   const handleSubmitGuess = () => {
     if (socket) {
       socket.emit('saveGuess', { roomId, guess });
       setWaitingForFlipbook(true);
-      socket.emit('requestNextFlipbook', { roomId, currFlipbookOwner });
+      socket.emit('requestNextFlipbook', { roomId });
     }
     
     console.log('Guess submitted:', guess);
@@ -98,7 +97,6 @@ const GuessingPage: React.FC<GuessingPageProps> = ({ roomId, drawingToGuess, onV
       <div className="guessing-page">
         <h2>What do you think this drawing represents?</h2>
         <img src={drawingToGuess} alt="Drawing to guess" style={{ border: '1px solid black' }} />
-        DrawingD URL: ${drawingToGuess}
         <br></br>
         <input
           type="text"
@@ -120,6 +118,21 @@ const GuessingPage: React.FC<GuessingPageProps> = ({ roomId, drawingToGuess, onV
           View Drawings
         </button>
       </div>
+      {waitingForFlipbook && (
+        <div 
+          className={"text-black font-bold py-2 px-4 rounded"} 
+          style={{ 
+            display: 'flex', 
+            justifyContent: 'center', 
+            alignItems: 'center', 
+            gap: '1rem', 
+            fontSize: '25px'  // or any other value you prefer
+          }}
+        >
+          Submitted. Waiting for next flipbook to become available...
+        </div>
+
+      )}
     </div>
   );
 };
