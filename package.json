@@ -3,7 +3,7 @@
   "description": "draw, guess, and laugh with friends",
   "private": true,
   "scripts": {
-    "dev": "npm run dev:client && npm run dev:server",
+    "dev": "npm-run-all --parallel dev:client dev:server",
     "start": "npm run start:client && npm run start:server",
     "install": "npm run install:client && npm run install:server",
     "dev:client": "cd client && npm run dev",
