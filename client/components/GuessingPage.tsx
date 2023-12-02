@@ -14,7 +14,7 @@ interface GuessingPageProps {
 const GuessingPage: React.FC<GuessingPageProps> = ({ roomId, drawingToGuess, onViewDrawings }) => {
   const socket = useSocket();
   const [guess, setGuess] = useState('');
-  const [timer, setTimer] = useState(5);
+  const [timer, setTimer] = useState(30);
   const [waitingForFlipbook, setWaitingForFlipbook] = useState(false);
 
   const handleSubmitGuess = () => {
