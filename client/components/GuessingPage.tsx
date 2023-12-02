@@ -95,7 +95,9 @@ const GuessingPage: React.FC<GuessingPageProps> = ({ roomId, drawingToGuess, onV
         </h2>
       </div>
       <div className="guessing-page">
-        <h2>What do you think this drawing represents?</h2>
+        <div className="prompt-box">
+          What do you think this drawing represents?
+        </div>
         <img src={drawingToGuess} alt="Drawing to guess" style={{ border: '1px solid black' }} />
         <br></br>
         <input
