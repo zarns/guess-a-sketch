@@ -65,6 +65,10 @@ Deployed at [sketch.zarns.net](https://sketch.zarns.net). The backend is takes a
 
 6. Realize Azure AKS is charging ~$5/day. Deploy frontend to Vercel and backend to the free tier of [render.com](https://render.com/) instead!
 
+## Demo
+
+![Demo](demo/demo.gif)
+
 ## Acknowledgments
 
 Major thanks to these resources:
