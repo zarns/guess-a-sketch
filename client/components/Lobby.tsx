@@ -5,12 +5,9 @@ import { useSocket } from '../contexts/SocketContext';
 
 interface LobbyProps {
   roomId: string | string[];
-  onStartGame: () => void;
-  onGameStarted: () => void;
 }
 
-
-const Lobby: React.FC<LobbyProps> = ({ roomId, onStartGame }) => {
+const Lobby: React.FC<LobbyProps> = ({ roomId }) => {
   const socket = useSocket();
   const [users, setUsers] = useState<string[]>([]);
   const [isHost, setIsHost] = useState(false);
@@ -59,7 +56,6 @@ const Lobby: React.FC<LobbyProps> = ({ roomId, onStartGame }) => {
     if (socket) {
       socket.emit('startGame', roomId);
     }
-    onStartGame();
   };
   
 

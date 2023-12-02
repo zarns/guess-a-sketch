@@ -29,9 +29,11 @@ const Room: React.FC = () => {
     console.log(`Current Round: ${currentRound}`);
   }, [currentRound]);
 
-  const handleGameStarted = () => {
+  const handleGameStarted = (firstWord: string) => {
     setCurrentRound(1);
     setGameStarted(true);
+    setPreviousWord(firstWord);
+    setPreviousAuthor("Word Generator");
   };
 
   const handleShowDrawings = () => {
@@ -50,7 +52,20 @@ const Room: React.FC = () => {
 
   useEffect(() => {
     if (socket) {
-      socket.on('flipbookData', (latestPage: FlipBookPage) => {
+      socket.on('gameStarted', (firstWord: string) => {
+        handleGameStarted(firstWord);
+      });
+    }
+    return () => {
+      if (socket) {
+        socket.off('gameStarted');
+      }
+    };
+  }, [socket]);
+
+  useEffect(() => {
+    if (socket) {
+      socket.on('nextRoundAndflipbookData', (latestPage: FlipBookPage, newCurrentRound: number) => {
         const { type, username, content } = latestPage;
         console.log(`Type: ${type}, Username: ${username}, Content: ${content}`);     
 
@@ -60,8 +75,6 @@ const Room: React.FC = () => {
         } else {
           setPreviousDrawing(content);
         }
-      });
-      socket.on('nextRound', (newCurrentRound) => {
         setCurrentRound(newCurrentRound);
       });
       socket.on('endGame', () => {
@@ -70,8 +83,7 @@ const Room: React.FC = () => {
     }
     return () => {
       if (socket) {
-        socket.off('flipbookData');
-        socket.off('nextRound');
+        socket.off('nextRoundAndflipbookData');
         socket.off('endGame');
       }
     };
@@ -92,7 +104,7 @@ const Room: React.FC = () => {
     >
     <div className="flex flex-col items-center w-full h-full">
       {!gameStarted && (
-        <Lobby roomId={roomId} onStartGame={handleGameStarted} onGameStarted={handleGameStarted} />
+        <Lobby roomId={roomId} />
       )}
       {gameStarted && !showDrawings && currentRound % 2 === 1 && (
         <DrawingPage roomId={roomId} previousGuess={previousWord} onViewDrawings={handleShowDrawings} />

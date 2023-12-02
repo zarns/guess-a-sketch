@@ -44,9 +44,8 @@ io.on('connection', (socket) => {
     room.buildFlipBooks();
     room.setPassingOrder();
     room.setMaxRounds();
-
-    socket.to(roomId).emit('gameStarted');
-  });  
+    room.emitGameStartedToPlayers();
+  });
 
   socket.on('joinRoom', (roomId: string, username: string) => {
     const room = rooms.getRoom(roomId); // Retrieve the room data from the Rooms instance
@@ -75,17 +74,6 @@ io.on('connection', (socket) => {
     }
   });
 
-  socket.on('giveMeAFlipBook', (roomId: string) => {
-    const room = rooms.getRoom(roomId);
-    if (!room) {
-      console.error('Error: room not found');
-      return;
-    }
-  
-    const page = room.getNextFlipbookFor(socket)?.getLatestPage();
-    socket.emit('flipbookData', page, room.currentRound);
-  });
-
   socket.on('saveDrawing', ({ roomId, drawingDataUrl }) => {
     console.log(`saveDrawing event in room: ${roomId}`);
     const room = rooms.getRoom(roomId);
@@ -95,11 +83,10 @@ io.on('connection', (socket) => {
       return;
     }
     room.saveDrawing(socket, drawingDataUrl);
-    const currRound = room.checkPhaseCompletion();
+    const currRound: number = room.checkPhaseCompletion();
     if (currRound === -1) {
       return;
     }
-    console.log("delete me");
     handleNextRoundStarted(roomId, currRound);
   });
 
@@ -116,7 +103,6 @@ io.on('connection', (socket) => {
     if (currRound === -1) {
       return;
     }
-    console.log("delete me");
     handleNextRoundStarted(roomId, currRound);
   });
 

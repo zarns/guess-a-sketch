@@ -5,7 +5,7 @@ class FlipBook {
 
   constructor(firstWord: string) {
     this.pages = [];
-    this.pages.push({ username: '', type: 'guess', content: firstWord });
+    this.pages.push({ username: 'Word Generator', type: 'guess', content: firstWord });
   }
 
   addGuess(guesserUsername: string, guess: string) {
@@ -17,7 +17,7 @@ class FlipBook {
   }
 
   hasEntryForRound(roundNumber: number): boolean {
-    return this.pages.length >= roundNumber;
+    return this.pages.length > roundNumber;
   }
 
   getPages() {

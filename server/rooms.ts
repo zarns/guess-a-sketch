@@ -78,7 +78,7 @@ class Room {
       console.error(`Error: Socket not found in passingOrder`);
       return;
     }
-    const passingIndex = (userIndex + this.currentRound) % this.passingOrder.length;
+    const passingIndex = (userIndex + this.currentRound - 1) % this.passingOrder.length;
     const passingUserSocket = this.passingOrder[passingIndex];
     const passingUsername = this.usernameMap.get(passingUserSocket);
 
@@ -113,14 +113,14 @@ class Room {
       return;
     }
 
-    let flipbook = this.flipBooks.get(username);
+    const flipBook = this.getNextFlipbookFor(socket);
 
-    if (!flipbook) {
+    if (!flipBook) {
       console.error(`Error: username${username} not found in the flipBooks map`);
       return;
     }
 
-    flipbook.addDrawing(username, drawingDataUrl);
+    flipBook.addDrawing(username, drawingDataUrl);
     console.log(`Drawing saved for ${username} in room ${this.id}`);
     // this.checkPhaseCompletion();
   }
@@ -133,7 +133,7 @@ class Room {
       return;
     }
 
-    const flipBook = this.flipBooks.get(username);
+    const flipBook = this.getNextFlipbookFor(socket);
 
     if (!flipBook) {
       console.error(`Error: username${username} not found in the flipBooks map`);
@@ -166,11 +166,18 @@ class Room {
     return Array.from(uniqueWords);
   }
 
+  emitGameStartedToPlayers() {
+    this.usernameMap.forEach((username, socket) => {
+      const latestPage = this.getNextFlipbookFor(socket)?.getLatestPage();
+      const firstWord = latestPage?.content;
+      socket.emit('gameStarted', firstWord);
+    });
+  }
+
   emitNextRoundToAllPlayers(currRound: number) {
     this.usernameMap.forEach((username, socket) => {
       const latestPage = this.getNextFlipbookFor(socket)?.getLatestPage();
-      socket.emit('flipbookData', latestPage);
-      socket.emit('nextRound', currRound);
+      socket.emit('nextRoundAndflipbookData', latestPage, currRound);
     });
   }
 
